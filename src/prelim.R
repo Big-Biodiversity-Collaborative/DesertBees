@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 13 March 2023
-# Last modified: 20 March 2023
+# Last modified: 22 March 2023
 
 
 
@@ -84,35 +84,52 @@ library(leaflet)
 
 ### CLEAN FOR PLOTTING ---
 
+# Read csv
+map_data <- read_csv("data/gbif_rawdata_full.csv")
+
+# 120454 observations, 259 variables
+
+# Remove duplicate observations
+map_data <- distinct(map_data)
+
+# 120454 observations, 259 variables
+
+# Remove observations with NA latitude / longitude
+map_data <- map_data[!is.na(map_data$decimalLatitude), ]
+map_data <- map_data[!is.na(map_data$decimalLongitude), ]
+
+# 113519 observations, 259 variables
+
 # Reduce columns to what is / might be necessary for mapping
 # Numbers correspond to specific columns in the full raw data
-map_data <- select(full_data, 107, 108, 109, 240, 203, 207, 138, 139, 125)
+map_data <- select(map_data, 107, 108, 109, 240, 203, 207, 138, 139, 125)
 
-# Gives 120454 observations and 9 variables
+# 113519 observations, 9 variables
 
 # Rename columns
 colnames(map_data)[6] = "species"
 colnames(map_data)[7] = "latitude"
 colnames(map_data)[8] = "longitude"
 
-# Remove observations with NA latitude / longitude
-map_data <- map_data[!is.na(map_data$latitude), ]
-map_data <- map_data[!is.na(map_data$longitude), ]
-
-# Gives 113519 observations and 9 variables
-
-# Remove duplicate observations
-map_data <- unique(map_data)
-
-# Gives 108431 observations and 9 variables
-
 # Save reduced and cleaned data to data folder
 write_csv(map_data, "data/map_data.csv")
 
 # --- Added 3/19/2023 ---
 
+# Read csv
+map_data2 <- read_csv("data/gbif_rawdata_otesota.csv")
+
+# 4562 observations, 259 columns
+
+# Remove observations with NA latitude / longitude
+map_data2 <- map_data2[!is.na(map_data2$decimalLatitude), ]
+map_data2 <- map_data2[!is.na(map_data2$decimalLongitude), ]
+
+# 4101 observations, 9 variables
+
 # Since Olneya tesota is a new additon, it will be merged to the initial data
-map_data2 <- select(otesota_data, 107, 108, 109, 240, 203, 207, 138, 139, 125)
+# Columns retained should be the same
+map_data2 <- select(map_data2, 107, 108, 109, 240, 203, 207, 138, 139, 125)
 
 # Gives 4562 observations and 9 variables
 
@@ -121,24 +138,13 @@ colnames(map_data2)[6] = "species"
 colnames(map_data2)[7] = "latitude"
 colnames(map_data2)[8] = "longitude"
 
-# Remove observations with NA latitude / longitude
-map_data2 <- map_data2[!is.na(map_data2$latitude), ]
-map_data2 <- map_data2[!is.na(map_data2$longitude), ]
-
-# Gives 4101 observations and 9 variables
-
-# Remove duplicate observations
-map_data2 <- unique(map_data2)
-
-# Gives 3869 observations and 9 variables
-
 # Save reduced and cleaned data to data folder
 write_csv(map_data2, "data/map_data2.csv")
 
 # Combine initial data with Olneya tesota data
 full_map_data <- rbind(map_data, map_data2)
 
-# Gives new dataframe with 112300 observations and 9 variables
+# Gives new dataframe with 1117620 observations and 9 variables
 
 # Save complete map data
 write_csv(full_map_data, "data/full_map_data.csv")
@@ -149,7 +155,7 @@ write_csv(full_map_data, "data/full_map_data.csv")
 NAm_map_data <- full_map_data %>%
   filter(countryCode == "US" | countryCode == "MX")
 
-# Gives new dataframe with 68488 observations and 9 variables
+# Gives new dataframe with 73143 observations and 9 variables
 
 # Save North America map data
 write_csv(NAm_map_data, "data/NAm_map_data.csv")
