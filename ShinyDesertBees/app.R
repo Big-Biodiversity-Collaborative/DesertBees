@@ -163,12 +163,12 @@ server <- function(input, output) {
       addLegend(position = "bottomright",
                 colors = c("#FF3E96", "#FFA500", "#C0FF3E", 
                                     "#00FFFF", "#EED2EE", "#E066FF"),
-                                    labels = c("Centris pallida (220)", 
-                                               "Parkinsonia aculeata (6469)",
-                                               "Parkinsonia florida (3056)", 
-                                               "Parkinsonia microphylla (3659)",
-                                               "Larrea tridentata (51215)", 
-                                               "Olneya tesota (3869)"),
+                                    labels = c("Centris pallida (866)", 
+                                               "Parkinsonia aculeata (6758)",
+                                               "Parkinsonia florida (3194)", 
+                                               "Parkinsonia microphylla (3784)",
+                                               "Larrea tridentata (54440)", 
+                                               "Olneya tesota (4101)"),
                 title = "Legend of Species (# records in North America)",
                 opacity = 1) %>%
       setView(lng = -101.030339, lat = 26.791093, zoom = 4.4)
