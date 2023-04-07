@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 25 March 2023
-# Last modified: 26 March 2023
+# Last modified: 28 March 2023
 
 
 
@@ -219,7 +219,7 @@ ymax_f <- max(cp_pred_df_future$y)
 ymin_f <- min(cp_pred_df_future$y)
 
 # Create ggplot of future SDM
-future_SDM <- ggplot() +
+future_SDM_70 <- ggplot() +
   geom_polygon(data = wrld, 
                mapping = aes(x = long, y = lat, group = group),
                fill = "#BFBFBF") +
@@ -240,13 +240,82 @@ future_SDM <- ggplot() +
         legend.box.margin = margin(5, 5, 5, 5))
 
 # Save plot
-ggsave(filename = "future_cpallida_sdm.jpg", 
-       plot = future_SDM, 
+ggsave(filename = "future_cpallida_sdm_70yrs.jpg", 
+       plot = future_SDM_70, 
        path = "output", 
        width = 1600, 
        height = 1000, 
        units = "px")
 
+
+
+### FUTURE SPECIES DISTRIBUTION MODEL ADDITION (added 03/28/2023) ---
+
+# Has an additional step to create a prediction 50 years into future
+# Only options for CMIP5 getData() are either 50 or 70 years into the future
+
+# --- PROJECTED CLIMATE DATA ---
+
+# Download predicted climate data from CMIP5
+future_env_50 <- raster::getData(name = "CMIP5", 
+                                 var = "bio", 
+                                 res = 2.5,
+                                 rcp = 45, 
+                                 model = "IP", 
+                                 year = 50, 
+                                 path = "data") 
+
+names(future_env_50) = names(clim)
+
+# --- PREDICT AREAS ---
+
+# Limit boundaries of prediction
+geo_area_future_50 <- crop(future_env_50, predict_extent)
+
+# Generate prediction from model over boundaries
+# Where else could C. pallida be (in the future)
+cp_pred_plot_future_50 <- raster::predict(cp_SDM, geo_area_future_50)
+
+# Convert prediction to a data frame for plotting
+raster_spdf_future_50 <- as(cp_pred_plot_future_50, "SpatialPixelsDataFrame")
+cp_pred_df_future_50 <- as.data.frame(raster_spdf_future_50)
+
+# --- PLOT FUTURE PREDICTIONS ON MAP ---
+
+# Set boundaries where map should be focused
+xmax_f2 <- max(cp_pred_df_future_50$x)
+xmin_f2 <- min(cp_pred_df_future_50$x)
+ymax_f2 <- max(cp_pred_df_future_50$y)
+ymin_f2 <- min(cp_pred_df_future_50$y)
+
+# Create ggplot of future SDM
+future_SDM_50 <- ggplot() +
+  geom_polygon(data = wrld, 
+               mapping = aes(x = long, y = lat, group = group),
+               fill = "#BFBFBF") +
+  geom_raster(data = cp_pred_df_future_50, 
+              aes(x = x, y = y, fill = layer)) + 
+  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
+  coord_fixed(xlim = c(xmin_f2, xmax_f2), 
+              ylim = c(ymin_f2, ymax_f2), 
+              expand = F) +
+  scale_size_area() +
+  borders("state") +
+  labs(title = 
+         bquote(italic("Centris pallida")~"SDM under CMIP5 Climate Predictions"),
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Environmental \nSuitability") + 
+  theme(legend.box.background = element_rect(),
+        legend.box.margin = margin(5, 5, 5, 5))
+
+# Save plot
+ggsave(filename = "future_cpallida_sdm_50yrs.jpg", 
+       plot = future_SDM_50, 
+       path = "output", 
+       width = 1600, 
+       height = 1000, 
+       units = "px")
 
 
 
@@ -273,8 +342,8 @@ current_plot <- ggplot() +
   theme(legend.box.background = element_rect(),
         legend.position = "bottom")
 
-# Future SDM
-future_plot <- ggplot() +
+# Future SDM (70 years)
+future_plot_70 <- ggplot() +
   geom_polygon(data = wrld, 
                mapping = aes(x = long, y = lat, group = group),
                fill = "#BFBFBF") +
@@ -287,7 +356,28 @@ future_plot <- ggplot() +
   scale_size_area() +
   borders("state") +
   labs(title = 
-         bquote(bold("under CMIP5 Climate Predictions")),
+         bquote(bold("under CMIP5 Climate Predictions (70 yrs)")),
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Environmental \nSuitability") + 
+  theme(legend.box.background = element_rect(),
+        legend.position = "bottom")
+
+# Future SDM (50 years)
+future_plot_50 <- ggplot() +
+  geom_polygon(data = wrld, 
+               mapping = aes(x = long, y = lat, group = group),
+               fill = "#BFBFBF") +
+  geom_raster(data = cp_pred_df_future_50, 
+              aes(x = x, y = y, fill = layer)) + 
+  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
+  coord_fixed(xlim = c(xmin_f2, xmax_f2), 
+              ylim = c(ymin_f2, ymax_f2), 
+              expand = F) +
+  scale_size_area() +
+  borders("state") +
+  labs(title = 
+         bquote(bold("under CMIP5 Climate Predictions (50 yrs)")),
        x = "Longitude",
        y = "Latitude",
        fill = "Environmental \nSuitability") + 
@@ -295,7 +385,7 @@ future_plot <- ggplot() +
         legend.position = "bottom")
 
 # Combine plots
-plot_row <- plot_grid(current_plot, future_plot)
+plot_row <- plot_grid(current_plot, future_plot_50, future_plot_70)
 
 # Generate common plot title
 title <- ggdraw() + 
@@ -311,7 +401,7 @@ combined_plots <- plot_grid(title,
                             rel_heights = c(0.1, 1))
 
 # Save combined plots
-ggsave(filename = "current_future_SDM.jpg",
+ggsave(filename = "current_future_SDM_2.jpg",
        plot = combined_plots,
        path = "output",
        width = 2600,
