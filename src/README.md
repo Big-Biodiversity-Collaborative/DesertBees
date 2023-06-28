@@ -14,7 +14,7 @@
 
 -   **NAm_data_further_reduced.R**
 
-    Reduces NAm_map_data.csv to select species: *C. pallida*, *O. tesota*, *P. florida*, and *P. microphylla*. Draws boundary around observations and removes outliers based on requests -- desired boundary images are stored in [other_files](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/other_files) as \~\_bounds.png files.
+    Reduces NAm_map_data.csv to select species: *C. pallida*, *O. tesota*, *P. florida*, and *P. microphylla*. Draws boundary around observations and removes outliers based on requests -- desired boundary images are stored in [images](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/images) as \~\_bounds.png files.
 
 -   **prelim.R**
 
