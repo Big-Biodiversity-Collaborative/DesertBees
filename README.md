@@ -1,5 +1,7 @@
 # Distributions of *Centris pallida* and Host Plants
 
+*Last updated: June 27, 2023*
+
 ## 🐝 Summary
 
 This repository stores the data and code for generating figures of the current and (predicted) future distribution of *Centris pallida* and some of its host plants (*Olneya tesota*, *Parkinsonia florida*, and *Parkinsonia microphylla*).
@@ -7,16 +9,6 @@ This repository stores the data and code for generating figures of the current a
 ## 📚 Libraries
 
 The following R libraries are used (and scripts will use all, or some, of these):
-
-+---------------+--------------+---------------+
-| -   cowplot   | -   maps     | -   rJava     |
-|               |              |               |
-| -   dismo     | -   maptools | -   spocc     |
-|               |              |               |
-| -   gridExtra | -   readr    | -   tidyverse |
-|               |              |               |
-| -   leaflet   | -   rgbif    |               |
-+---------------+--------------+---------------+
 
 -   cowplot
 
@@ -49,5 +41,3 @@ The following R libraries are used (and scripts will use all, or some, of these)
 **output:** Contains figures and model outputs.
 
 **images:** Contains reference pictures for filtering the data.
-
-*Last updated: June 27, 2023*
