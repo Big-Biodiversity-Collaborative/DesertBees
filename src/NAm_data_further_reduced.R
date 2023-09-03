@@ -4,7 +4,7 @@
 # Last modified: 28 August 2023
 
 
-### ABOUT THE SCRIPT -----
+# ----- ABOUT THE SCRIPT -----
 
 # Further filters data per Dr. Buchanan's request (see images folder)
 
@@ -27,7 +27,7 @@
 
 
 
-### LOAD LIBRARIES -----
+# ----- LOAD LIBRARIES -----
 
 library(tidyverse)
 library(sf)
@@ -37,13 +37,13 @@ library(mapview)
 
 
 
-# LOAD DATA ---
+# ----- LOAD DATA ---
 og_data <- read_csv("data/NAm_map_data.csv")
 
 
 
 
-### FILTER CENTRIS PALLIDA (KEY: 1342915) -----
+# ----- FILTER CENTRIS PALLIDA (KEY: 1342915) -----
 
 # Filter for C. pallida
 cp_data <- filter(og_data,
@@ -123,7 +123,7 @@ mapview(cp_coords) +
 
 
 
-### FILTER OLNEYA TESOTA (KEY: 2974564) -----
+# ----- FILTER OLNEYA TESOTA (KEY: 2974564) -----
 
 # Filter for O. tesota
 ot_data <- filter(og_data,
@@ -190,7 +190,7 @@ mapview(ot_coords) +
 
 
 
-### FILTER PARKINSONIA FLORIDA (KEY: 5359949) -----
+# ----- FILTER PARKINSONIA FLORIDA (KEY: 5359949) -----
 
 # Filter for P. florida
 pf_data <- filter(og_data,
@@ -259,7 +259,7 @@ mapview(pf_coords) +
 
 
 
-### FILTER PARKINSONIA MICROPHYLLA (KEY: 5359945) -----
+# ----- FILTER PARKINSONIA MICROPHYLLA (KEY: 5359945) -----
 
 # Filter for P. microphylla
 pm_data <- filter(og_data,
@@ -325,7 +325,7 @@ mapview(pm_coords) +
 
 
 
-### SAVE NEWLY FILTERED DATA AS A NEW .CSV FILE -----
+# ----- SAVE NEWLY FILTERED DATA AS A NEW .CSV FILE -----
 
 # Combine all ~_coords data into one table
 
