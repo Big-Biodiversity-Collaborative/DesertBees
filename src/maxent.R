@@ -90,10 +90,12 @@ geo_extent <- extent(cp_spatial)
 set.seed(8)
 
 # Generate background (pseudo-absence) points within boundaries
-# We have 866 presence points for C. pallida, so we will create
-#  an equal number of pseudo-absence points
+# [Ignore this, see next comment] We have 866 presence points for C. pallida, 
+#  so we will create an equal number of pseudo-absence points
+# [UPDATE] We ACTUALLY want WAY more pseudo-absence points because they act as
+#  background for all the possible locations that are considered in Maxent
 bg_data <- randomPoints(mask = mask,
-                        n = 866,
+                        n = 10392, # 866 x 12 = 10392
                         ext = geo_extent,
                         extf = 1.25, 
                         warn = 0) 
@@ -385,7 +387,7 @@ future_plot_50 <- ggplot() +
         legend.position = "bottom")
 
 # Combine plots
-plot_row <- plot_grid(current_plot, future_plot_50, future_plot_70)
+plot_row <- plot_grid(current_plot, future_plot_70)
 
 # Generate common plot title
 title <- ggdraw() + 
@@ -401,7 +403,7 @@ combined_plots <- plot_grid(title,
                             rel_heights = c(0.1, 1))
 
 # Save combined plots
-ggsave(filename = "current_future_SDM_2.jpg",
+ggsave(filename = "current_future_SDM.jpg",
        plot = combined_plots,
        path = "output",
        width = 2600,
