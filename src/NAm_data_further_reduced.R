@@ -1,12 +1,12 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 30 April 2023
-# Last modified: 28 August 2023
+# Last modified: 12 September 2023
 
 
 # ----- ABOUT THE SCRIPT -----
 
-# Further filters data per Dr. Buchanan's request (see images folder)
+# Further filters data per Dr. Buchmann's request (see images folder)
 
 # Reduces data to:
   # Centris pallida - 1342915
@@ -16,9 +16,11 @@
 
 # And removes unlikely observations by drawing boundary around desired points'
 
-# Creates new data frame with the further reduced data (NAm_map_data_2.csv)
+# Creates new data frame with the further reduced data (NAm_map_data_final.csv)
 
-# It is probably best to run this by each line rather than altogether
+# mapview() have been commented out so this can be run altogether, but
+#  if you want to see the map and polygons in process run this line-by-line
+#  and include the mapview()
 
 # (Could have probably been made with a loop and having images generate)
 # (but I like seeing everything broken down so... yeah)
@@ -39,6 +41,9 @@ library(mapview)
 
 # ----- LOAD DATA ---
 og_data <- read_csv("data/NAm_map_data.csv")
+
+# 73143 observations 
+# (includes Parkinsonia aculeata, which is no longer part of the project)
 
 
 
@@ -63,7 +68,7 @@ sp_coords <- SpatialPoints(coords,
 
 # Plot points on a map
 # Map will show in Viewer of RStudio
-mapview(sp_coords)
+# mapview(sp_coords)
 
 # Create polygon around desired points
 # Got coordinates of corners from rolling over map in Viewer
@@ -97,8 +102,8 @@ sp_cp_poly <- SpatialPolygons(list(cp_poly),
 
 # Plot polygon on map to check boundaries
 # The "+" adds SpatialPolygon on top of SpatialPoints
-mapview(sp_coords) + 
-  mapview(sp_cp_poly)
+# mapview(sp_coords) + 
+#   mapview(sp_cp_poly)
 
 # Isolate points within boundary
 cp_coords <- sp_coords[sp_cp_poly, ]
@@ -114,8 +119,17 @@ cp_coords <- sp_coords[sp_cp_poly, ]
   # ANYWAY, back to the code.
 
 # Make sure points are correct
-mapview(cp_coords) + 
-  mapview(sp_cp_poly)
+# mapview(cp_coords) + 
+#  mapview(sp_cp_poly)
+
+# Convert SpatialPoints back to normal points for new dataframe later
+# Also add column specifying respective species
+# AND also column for species key
+cp_coords <- as.data.frame(cp_coords)
+cp_coords <- cbind(speciesKey = 1342915,
+                   cp_coords)
+
+# 861 observations
 
 # Make sure to clear the Viewer before next point cleaning!
 # I dunno what the function for that is right now
@@ -141,7 +155,7 @@ sp_coords <- SpatialPoints(coords,
                            proj4string = CRS("+proj=longlat"))
 
 # Plot points on a map
-mapview(sp_coords)
+# mapview(sp_coords)
 
 # Create polygon around desired points
 
@@ -175,15 +189,23 @@ sp_ot_poly <- SpatialPolygons(list(ot_poly),
                               proj4string = CRS("+proj=longlat"))
 
 # Plot polygon on map to check boundaries
-mapview(sp_coords) + 
-  mapview(sp_ot_poly)
+# mapview(sp_coords) + 
+#  mapview(sp_ot_poly)
 
 # Isolate points within boundary
 ot_coords <- sp_coords[sp_ot_poly, ]
 
 # Make sure points are correct
-mapview(ot_coords) + 
-  mapview(sp_ot_poly)
+# mapview(ot_coords) + 
+#  mapview(sp_ot_poly)
+
+# Convert SpatialPoints back to normal points for new dataframe later
+# Also add column specifying respective species
+ot_coords <- as.data.frame(ot_coords)
+ot_coords <- cbind(speciesKey = 2974564,
+                   ot_coords)
+
+# 4090 observations
 
 # Make sure to clear Viewer before proceeding
 
@@ -208,7 +230,7 @@ sp_coords <- SpatialPoints(coords,
                            proj4string = CRS("+proj=longlat"))
 
 # Plot points on a map
-mapview(sp_coords)
+# mapview(sp_coords)
 
 # Create polygon around desired points
 
@@ -245,15 +267,23 @@ sp_pf_poly <- SpatialPolygons(list(pf_poly),
                               proj4string = CRS("+proj=longlat"))
 
 # Plot polygon on map to check boundaries
-mapview(sp_coords) + 
-  mapview(sp_pf_poly)
+# mapview(sp_coords) + 
+#  mapview(sp_pf_poly)
 
 # Isolate points within boundary
 pf_coords <- sp_coords[sp_pf_poly, ]
 
 # Make sure points are correct
-mapview(pf_coords) + 
-  mapview(sp_pf_poly)
+# mapview(pf_coords) + 
+#  mapview(sp_pf_poly)
+
+# Convert SpatialPoints back to normal points for new dataframe later
+# Also add column specifying respective species
+pf_coords <- as.data.frame(pf_coords)
+pf_coords <- cbind(speciesKey = 5359949,
+                   pf_coords)
+
+# 3172 observations
 
 # Make sure to clear Viewer before proceeding
 
@@ -277,7 +307,7 @@ sp_coords <- SpatialPoints(coords,
                            proj4string = CRS("+proj=longlat"))
 
 # Plot points on a map
-mapview(sp_coords)
+# mapview(sp_coords)
 
 # Create polygon around desired points
 
@@ -312,15 +342,23 @@ sp_pm_poly <- SpatialPolygons(list(pm_poly),
                               proj4string = CRS("+proj=longlat"))
 
 # Plot polygon on map to check boundaries
-mapview(sp_coords) + 
-  mapview(sp_pm_poly)
+# mapview(sp_coords) + 
+#  mapview(sp_pm_poly)
 
 # Isolate points within boundary
 pm_coords <- sp_coords[sp_pm_poly, ]
 
 # Make sure points are correct
-mapview(pm_coords) + 
-  mapview(sp_pm_poly)
+# mapview(pm_coords) + 
+#  mapview(sp_pm_poly)
+
+# Convert SpatialPoints back to normal points for new dataframe later
+# Also add column specifying respective species
+pm_coords <- as.data.frame(pm_coords)
+pm_coords <- cbind(speciesKey = 5359945,
+                   pm_coords)
+
+# 3784 observations
 
 
 
@@ -328,8 +366,17 @@ mapview(pm_coords) +
 # ----- SAVE NEWLY FILTERED DATA AS A NEW .CSV FILE -----
 
 # Combine all ~_coords data into one table
+species_coords <- rbind(cp_coords, ot_coords, pf_coords, pm_coords)
 
+# 11893 observations
 
-  
+# Filter original NAm_map_data.csv to the new species coordinates
+species_coords <- semi_join(og_data, species_coords)
+
+# 11893 observations
+
+# Save as .csv file to data folder
+write_csv(species_coords, "data/NAm_map_data_final.csv")
+
 
 

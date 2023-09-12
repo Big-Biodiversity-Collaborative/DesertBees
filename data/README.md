@@ -21,3 +21,7 @@ Excluded (by .gitignore) is gbif_rawdata_full.csv due to excessively large file 
 -   **NAm_map_data.csv**
 
     Filters full_map_data.csv to observations where countryCode is equal to "US" (United States) or "MX" (Mexico).
+
+-   **NAm_map_data_final.csv**
+
+    Further filters NAm_map_data.csv based on Dr. Buchmann's border drawings (see [images folder](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/d21f59cedcddf721dd1e7b97fd74326fd138b521/images)).
