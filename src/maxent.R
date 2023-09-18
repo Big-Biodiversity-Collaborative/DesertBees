@@ -1,11 +1,12 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 25 March 2023
-# Last modified: 28 March 2023
+# Last modified: 18 September 2023
 
 
 
-### ABOUT THE SCRIPT ---
+
+# ----- ABOUT THE SCRIPT -----
 
 # Maxent for Centris pallida
 
@@ -22,7 +23,8 @@
 
 
 
-### LOAD LIBRARIES ---
+
+# ----- LOAD LIBRARIES -----
 
 library(tidyverse)
 library(dismo)
@@ -35,10 +37,11 @@ library(cowplot)
 
 
 
-### CURRENT SPECIES DISTRIBUTION MODEL ---
+
+# ----- CURRENT SPECIES DISTRIBUTION MODEL -----
 
 # Read data
-cp_data <- read_csv("data/NAm_map_data.csv")
+cp_data <- read_csv("data/NAm_map_data_final.csv")
 
 # Isolate C. pallida records and reduce to only lat/long data
 cp_data <- cp_data %>%
@@ -182,13 +185,16 @@ ggsave(filename = "current_cpallida_sdm.jpg",
 
 
 
-### FUTURE SPECIES DISTRIBUTION MODEL ---
+
+# ----- FUTURE SPECIES DISTRIBUTION MODEL -----
 
 # Has an additional step to create a prediction 70 years into future
 
 # --- PROJECTED CLIMATE DATA ---
 
 # Download predicted climate data from CMIP5
+# Warning message: getData() will be removed in future raster
+# Use geodata package instead
 future_env <- raster::getData(name = "CMIP5", 
                               var = "bio", 
                               res = 2.5,
@@ -251,7 +257,8 @@ ggsave(filename = "future_cpallida_sdm_70yrs.jpg",
 
 
 
-### FUTURE SPECIES DISTRIBUTION MODEL ADDITION (added 03/28/2023) ---
+
+# ----- FUTURE SPECIES DISTRIBUTION MODEL ADDITION (added 03/28/2023) -----
 
 # Has an additional step to create a prediction 50 years into future
 # Only options for CMIP5 getData() are either 50 or 70 years into the future
@@ -321,7 +328,10 @@ ggsave(filename = "future_cpallida_sdm_50yrs.jpg",
 
 
 
-### PLOT CURRENT AND FUTURE SIDE-BY-SIDE
+
+# ----- PLOT CURRENT AND PREDICTED PLOTS -----
+
+# Seems repetitive so might need to rearrange this full script
 
 # Current SDM
 current_plot <- ggplot() +
@@ -338,27 +348,6 @@ current_plot <- ggplot() +
   borders("state") +
   labs(title = 
          bquote(bold("under Current Climate Conditions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(legend.box.background = element_rect(),
-        legend.position = "bottom")
-
-# Future SDM (70 years)
-future_plot_70 <- ggplot() +
-  geom_polygon(data = wrld, 
-               mapping = aes(x = long, y = lat, group = group),
-               fill = "#BFBFBF") +
-  geom_raster(data = cp_pred_df_future, 
-              aes(x = x, y = y, fill = layer)) + 
-  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
-  coord_fixed(xlim = c(xmin_f, xmax_f), 
-              ylim = c(ymin_f, ymax_f), 
-              expand = F) +
-  scale_size_area() +
-  borders("state") +
-  labs(title = 
-         bquote(bold("under CMIP5 Climate Predictions (70 yrs)")),
        x = "Longitude",
        y = "Latitude",
        fill = "Environmental \nSuitability") + 
@@ -386,7 +375,33 @@ future_plot_50 <- ggplot() +
   theme(legend.box.background = element_rect(),
         legend.position = "bottom")
 
-# Combine plots
+# Future SDM (70 years)
+future_plot_70 <- ggplot() +
+  geom_polygon(data = wrld, 
+               mapping = aes(x = long, y = lat, group = group),
+               fill = "#BFBFBF") +
+  geom_raster(data = cp_pred_df_future, 
+              aes(x = x, y = y, fill = layer)) + 
+  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
+  coord_fixed(xlim = c(xmin_f, xmax_f), 
+              ylim = c(ymin_f, ymax_f), 
+              expand = F) +
+  scale_size_area() +
+  borders("state") +
+  labs(title = 
+         bquote(bold("under CMIP5 Climate Predictions (70 yrs)")),
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Environmental \nSuitability") + 
+  theme(legend.box.background = element_rect(),
+        legend.position = "bottom")
+
+
+
+
+# ----- PLOT CURRENT AND FUTURE SIDE-BY-SIDE -----
+
+# Combine plots for current and 70 years
 plot_row <- plot_grid(current_plot, future_plot_70)
 
 # Generate common plot title
@@ -409,7 +424,6 @@ ggsave(filename = "current_future_SDM.jpg",
        width = 2600,
        height = 1791,
        units = "px")
-
 
 
 

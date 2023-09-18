@@ -2,7 +2,7 @@
 
 -   **maxent.R**
 
-    Runs Maximum Entropy model on Centris pallida observations in NAm_map_data.csv. Current climate data is from [WorldClim](https://worldclim.org/), and predicted climate data is from the [Coupled Model Intercomparison Project 5 (CMIP5)](https://esgf-node.llnl.gov/projects/cmip5/). Output is stored in the [outputs folder](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/output) under maxent_outputs. Figures (also in the outputs folder) include:
+    Runs Maximum Entropy model on Centris pallida observations in NAm_map_data_final.csv. Current climate data is from [WorldClim](https://worldclim.org/), and predicted climate data is from the [Coupled Model Intercomparison Project 5 (CMIP5)](https://esgf-node.llnl.gov/projects/cmip5/). Output is stored in the [outputs folder](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/output) under maxent_outputs. Figures (also in the outputs folder) include:
 
     -   current_cpallida_sdm.jpg
 
