@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 30 April 2023
-# Last modified: 12 September 2023
+# Last modified: 18 September 2023
 
 
 # ----- ABOUT THE SCRIPT -----
@@ -371,12 +371,24 @@ species_coords <- rbind(cp_coords, ot_coords, pf_coords, pm_coords)
 # 11893 observations
 
 # Filter original NAm_map_data.csv to the new species coordinates
-species_coords <- semi_join(og_data, species_coords)
+species_coords_comp <- semi_join(og_data, species_coords)
 
 # 11893 observations
 
 # Save as .csv file to data folder
 write_csv(species_coords, "data/NAm_map_data_final.csv")
+
+
+
+
+# ----- MAKE SURE THAT POINTS WERE FILTERED CORRECTLY -----
+
+# library(leaflet)
+
+# leaflet(species_coords_comp) %>%
+#   addProviderTiles("Esri.WorldImagery") %>%
+#   addProviderTiles("Stamen.TonerLines") %>%
+#   addCircles()
 
 
 
