@@ -376,7 +376,7 @@ species_coords_comp <- semi_join(og_data, species_coords)
 # 11893 observations
 
 # Save as .csv file to data folder
-write_csv(species_coords, "data/NAm_map_data_final.csv")
+write_csv(species_coords_comp, "data/NAm_map_data_final.csv")
 
 
 
