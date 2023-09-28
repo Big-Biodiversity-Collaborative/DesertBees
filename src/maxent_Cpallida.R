@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 25 March 2023
-# Last modified: 18 September 2023
+# Last modified: 27 September 2023
 
 
 
@@ -124,7 +124,7 @@ pres_abs_env <- as.data.frame(rbind(occ_env, absence_env))
 # p = presence/background points of C.pallida
 cp_SDM <- dismo::maxent(x = pres_abs_env,
                         p = pres_abs,
-                        path = paste("output/maxent_outputs"), )
+                        path = paste("output/maxent_Cpallida_outputs"), )
 
 # --- PREDICT AREAS ---
 
@@ -178,7 +178,7 @@ current_SDM <- ggplot() +
 # Save plot
 ggsave(filename = "current_cpallida_sdm.jpg", 
        plot = current_SDM, 
-       path = "output", 
+       path = "output/SDM_first_attempt", 
        width = 1600, 
        height = 1000, 
        units = "px")
@@ -250,7 +250,7 @@ future_SDM_70 <- ggplot() +
 # Save plot
 ggsave(filename = "future_cpallida_sdm_70yrs.jpg", 
        plot = future_SDM_70, 
-       path = "output", 
+       path = "output/SDM_first_attempt", 
        width = 1600, 
        height = 1000, 
        units = "px")
@@ -321,7 +321,7 @@ future_SDM_50 <- ggplot() +
 # Save plot
 ggsave(filename = "future_cpallida_sdm_50yrs.jpg", 
        plot = future_SDM_50, 
-       path = "output", 
+       path = "output/SDM_first_attempt", 
        width = 1600, 
        height = 1000, 
        units = "px")
@@ -420,7 +420,7 @@ combined_plots <- plot_grid(title,
 # Save combined plots
 ggsave(filename = "current_future_SDM.jpg",
        plot = combined_plots,
-       path = "output",
+       path = "output/SDM_first_attempt",
        width = 2600,
        height = 1791,
        units = "px")

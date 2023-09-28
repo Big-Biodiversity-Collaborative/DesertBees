@@ -105,10 +105,10 @@ mapshot(pf_plot, file = "output/pf_occ_map.png")
 mapshot(pm_plot, file = "output/pm_occ_map.png")
 
 # Re-open images
-cp_plot <- readPNG("output/cp_occ_map.png")
-ot_plot <- readPNG("output/ot_occ_map.png")
-pf_plot <- readPNG("output/pf_occ_map.png")
-pm_plot <- readPNG("output/pm_occ_map.png")
+cp_plot <- readPNG("output/occurence_maps/cp_occ_map.png")
+ot_plot <- readPNG("output/occurence_maps/ot_occ_map.png")
+pf_plot <- readPNG("output/occurence_maps/pf_occ_map.png")
+pm_plot <- readPNG("output/occurence_maps/pm_occ_map.png")
 
 # Arrange images in one one plot
 plots <- arrangeGrob(
@@ -119,7 +119,7 @@ plots <- arrangeGrob(
 )
 
 # Save plot
-ggsave2("output/spp_occ_maps.png", plots)
+ggsave2("output/occurence_maps/spp_occ_maps.png", plots)
 
 # Note: Needed to import to Microsoft Powerpoint to add letters to figure
 
