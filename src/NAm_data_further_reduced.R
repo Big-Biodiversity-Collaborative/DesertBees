@@ -4,6 +4,8 @@
 # Last modified: 18 September 2023
 
 
+
+
 # ----- ABOUT THE SCRIPT -----
 
 # Further filters data per Dr. Buchmann's request (see images folder)
@@ -289,6 +291,7 @@ pf_coords <- cbind(speciesKey = 5359949,
 
 
 
+
 # ----- FILTER PARKINSONIA MICROPHYLLA (KEY: 5359945) -----
 
 # Filter for P. microphylla
@@ -374,6 +377,10 @@ species_coords <- rbind(cp_coords, ot_coords, pf_coords, pm_coords)
 species_coords_comp <- semi_join(og_data, species_coords)
 
 # 11893 observations
+
+# Reorder species alphabetically
+species_coords_comp <- species_coords_comp[order(species_coords_comp$genus,
+                                                 species_coords_comp$species), ]
 
 # Save as .csv file to data folder
 write_csv(species_coords_comp, "data/NAm_map_data_final.csv")
