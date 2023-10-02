@@ -1,0 +1,36 @@
+Mon Oct 02 07:29:52 MST 2023
+MaxEnt version 3.4.3
+Reading file absence
+readGrid: max memory 477626368, total allocated 471859200, free 132058704, used 339800496, increment 81100440
+Reading samples from presence
+Read samples: max memory 477626368, total allocated 473432064, free 196370536, used 277061528, increment -62738968
+Adding samples to background in feature space
+Command line used:  autorun -e output/maxent_Pflorida_outputs/absence -o output/maxent_Pflorida_outputs -s output/maxent_Pflorida_outputs/presence -z
+Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=output/maxent_Pflorida_outputs samplesfile=output/maxent_Pflorida_outputs/presence environmentallayers=output/maxent_Pflorida_outputs/absence autorun novisible
+Species: species
+Layers: bio1 bio10 bio11 bio12 bio13 bio14 bio15 bio16 bio17 bio18 bio19 bio2 bio3 bio4 bio5 bio6 bio7 bio8 bio9
+Layertypes: Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous
+outputdirectory: output/maxent_Pflorida_outputs
+samplesfile: output/maxent_Pflorida_outputs/presence
+environmentallayers: output/maxent_Pflorida_outputs/absence
+autorun: true
+visible: false
+
+getSamples: max memory 477626368, total allocated 473432064, free 165974112, used 307457952, increment 30396424
+Making features
+makeFeatures: max memory 477626368, total allocated 473432064, free 117890440, used 355541624, increment 48083672
+species: 
+Regularization values: linear/quadratic/product: 0.050, categorical: 0.250, threshold: 1.000, hinge: 0.500
+3754 samples
+Density: max memory 477626368, total allocated 471859200, free 109551256, used 362307944, increment 6766320
+linearPredictor: max memory 477626368, total allocated 471859200, free 109551256, used 362307944, increment 0
+FeaturedSpace: max memory 477626368, total allocated 471859200, free 109551256, used 362307944, increment 0
+Sequential: max memory 477626368, total allocated 471859200, free 109551256, used 362307944, increment 0
+Initial loss: 10.233366673687698
+Time since start: 6.015
+500: time = 5.371000 loss = 8.797672
+Resulting gain: 1.435694189557374
+Projecting...
+Writing file output\maxent_Pflorida_outputs\species.csv
+Time since start: 8.48
+Ending

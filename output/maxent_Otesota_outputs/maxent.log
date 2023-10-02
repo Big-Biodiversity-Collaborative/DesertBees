@@ -1,0 +1,36 @@
+Mon Oct 02 07:03:04 MST 2023
+MaxEnt version 3.4.3
+Reading file absence
+readGrid: max memory 497549312, total allocated 497549312, free 394151864, used 103397448, increment 31582320
+Reading samples from presence
+Read samples: max memory 477626368, total allocated 477102080, free 348733888, used 128368192, increment 24970744
+Adding samples to background in feature space
+Command line used:  autorun -e output/maxent_Otesota_outputs/absence -o output/maxent_Otesota_outputs -s output/maxent_Otesota_outputs/presence -z
+Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=output/maxent_Otesota_outputs samplesfile=output/maxent_Otesota_outputs/presence environmentallayers=output/maxent_Otesota_outputs/absence autorun novisible
+Species: species
+Layers: bio1 bio10 bio11 bio12 bio13 bio14 bio15 bio16 bio17 bio18 bio19 bio2 bio3 bio4 bio5 bio6 bio7 bio8 bio9
+Layertypes: Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous
+outputdirectory: output/maxent_Otesota_outputs
+samplesfile: output/maxent_Otesota_outputs/presence
+environmentallayers: output/maxent_Otesota_outputs/absence
+autorun: true
+visible: false
+
+getSamples: max memory 477626368, total allocated 477102080, free 317379824, used 159722256, increment 31354064
+Making features
+makeFeatures: max memory 488636416, total allocated 488636416, free 364574384, used 124062032, increment -35660224
+species: 
+Regularization values: linear/quadratic/product: 0.050, categorical: 0.250, threshold: 1.000, hinge: 0.500
+4082 samples
+Density: max memory 488636416, total allocated 488636416, free 312082080, used 176554336, increment 52492304
+linearPredictor: max memory 488636416, total allocated 488636416, free 312082080, used 176554336, increment 0
+FeaturedSpace: max memory 488636416, total allocated 488636416, free 312082080, used 176554336, increment 0
+Sequential: max memory 488636416, total allocated 488636416, free 312082080, used 176554336, increment 0
+Initial loss: 10.249379569109392
+Time since start: 6.149
+500: time = 5.478000 loss = 8.855460
+Resulting gain: 1.3939194344078558
+Projecting...
+Writing file output\maxent_Otesota_outputs\species.csv
+Time since start: 8.892
+Ending

@@ -1,38 +1,35 @@
-Mon Sep 18 10:53:46 MST 2023
+Mon Oct 02 06:38:39 MST 2023
 MaxEnt version 3.4.3
 Reading file absence
-readGrid: max memory 510656512, total allocated 510656512, free 478694992, used 31961520, increment 31961520
+readGrid: max memory 484442112, total allocated 484442112, free 365499296, used 118942816, increment -1201144
 Reading samples from presence
-Read samples: max memory 510656512, total allocated 510656512, free 444070736, used 66585776, increment 34624256
+Read samples: max memory 484442112, total allocated 484442112, free 333594880, used 150847232, increment 31904416
 Adding samples to background in feature space
-Command line used:  autorun -e output/maxent_outputs/absence -o output/maxent_outputs -s output/maxent_outputs/presence -z
-Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=output/maxent_outputs samplesfile=output/maxent_outputs/presence environmentallayers=output/maxent_outputs/absence autorun novisible
+Command line used:  autorun -e output/maxent_Cpallida_outputs/absence -o output/maxent_Cpallida_outputs -s output/maxent_Cpallida_outputs/presence -z
+Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=output/maxent_Cpallida_outputs samplesfile=output/maxent_Cpallida_outputs/presence environmentallayers=output/maxent_Cpallida_outputs/absence autorun novisible
 Species: species
 Layers: bio1 bio10 bio11 bio12 bio13 bio14 bio15 bio16 bio17 bio18 bio19 bio2 bio3 bio4 bio5 bio6 bio7 bio8 bio9
 Layertypes: Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous Continuous
-outputdirectory: output/maxent_outputs
-samplesfile: output/maxent_outputs/presence
-environmentallayers: output/maxent_outputs/absence
+outputdirectory: output/maxent_Cpallida_outputs
+samplesfile: output/maxent_Cpallida_outputs/presence
+environmentallayers: output/maxent_Cpallida_outputs/absence
 autorun: true
 visible: false
 
-getSamples: max memory 510656512, total allocated 510656512, free 438743960, used 71912552, increment 5326776
+getSamples: max memory 484442112, total allocated 484442112, free 327214040, used 157228072, increment 6380840
 Making features
-makeFeatures: max memory 510656512, total allocated 510656512, free 425206064, used 85450448, increment 13537896
+makeFeatures: max memory 477626368, total allocated 471859200, free 414134896, used 57724304, increment -99503768
 species: 
 Regularization values: linear/quadratic/product: 0.050, categorical: 0.250, threshold: 1.000, hinge: 0.500
-Time since start: 1.355
 861 samples
-Density: max memory 510656512, total allocated 510656512, free 411793064, used 98863448, increment 13413000
-linearPredictor: max memory 510656512, total allocated 510656512, free 409075832, used 101580680, increment 2717232
-FeaturedSpace: max memory 510656512, total allocated 510656512, free 409075832, used 101580680, increment 0
-Sequential: max memory 510656512, total allocated 510656512, free 409075832, used 101580680, increment 0
+Density: max memory 477626368, total allocated 471859200, free 400097928, used 71761272, increment 14036968
+linearPredictor: max memory 477626368, total allocated 471859200, free 400044072, used 71815128, increment 53856
+FeaturedSpace: max memory 477626368, total allocated 471859200, free 400044072, used 71815128, increment 0
+Sequential: max memory 477626368, total allocated 471859200, free 400044072, used 71815128, increment 0
 Initial loss: 8.814330422638774
-Time since start: 7.001
-500: time = 5.546000 loss = 7.585550
+Time since start: 2.034
+500: time = 1.867000 loss = 7.585550
 Resulting gain: 1.228780882364057
-Time since start: 8.098
 Projecting...
-Writing file output\maxent_outputs\species.csv
-Time since start: 9.547
+Writing file output\maxent_Cpallida_outputs\species.csv
 Ending

@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 25 March 2023
-# Last modified: 27 September 2023
+# Last modified: 2 October 2023
 
 
 
@@ -340,11 +340,15 @@ current_plot <- ggplot() +
                fill = "#BFBFBF") +
   geom_raster(data = cp_pred_df, 
               aes(x = x, y = y, fill = layer)) + 
-  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
+  scale_fill_gradientn(colours=viridis::viridis(99)) +
   coord_fixed(xlim = c(xmin, xmax), 
               ylim = c(ymin, ymax), 
               expand = F) +
   scale_size_area() +
+  geom_point(data = cp_data,
+             aes(x = longitude, y = latitude),
+             color = "tan",
+             size = 1) +
   borders("state") +
   labs(title = 
          bquote(bold("under Current Climate Conditions")),
@@ -361,7 +365,7 @@ future_plot_50 <- ggplot() +
                fill = "#BFBFBF") +
   geom_raster(data = cp_pred_df_future_50, 
               aes(x = x, y = y, fill = layer)) + 
-  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
+  scale_fill_gradientn(colours=viridis::viridis(99)) +
   coord_fixed(xlim = c(xmin_f2, xmax_f2), 
               ylim = c(ymin_f2, ymax_f2), 
               expand = F) +
@@ -382,7 +386,7 @@ future_plot_70 <- ggplot() +
                fill = "#BFBFBF") +
   geom_raster(data = cp_pred_df_future, 
               aes(x = x, y = y, fill = layer)) + 
-  scale_fill_gradientn(colors = terrain.colors(10, rev = T)) +
+  scale_fill_gradientn(colours=viridis::viridis(99)) +
   coord_fixed(xlim = c(xmin_f, xmax_f), 
               ylim = c(ymin_f, ymax_f), 
               expand = F) +
@@ -396,13 +400,17 @@ future_plot_70 <- ggplot() +
   theme(legend.box.background = element_rect(),
         legend.position = "bottom")
 
+# Red / green scale fill
+# scale_fill_gradientn(colors = terrain.colors(10, rev = T))
+
+
 
 
 
 # ----- PLOT CURRENT AND FUTURE SIDE-BY-SIDE -----
 
 # Combine plots for current and 70 years
-plot_row <- plot_grid(current_plot, future_plot_70)
+plot_row <- plot_grid(current_plot, future_plot_50)
 
 # Generate common plot title
 title <- ggdraw() + 
@@ -418,10 +426,10 @@ combined_plots <- plot_grid(title,
                             rel_heights = c(0.1, 1))
 
 # Save combined plots
-ggsave(filename = "current_future_SDM.jpg",
+ggsave(filename = "current_future_SDM_cpallida.jpg",
        plot = combined_plots,
        path = "output/SDM_first_attempt",
-       width = 2600,
+       width = 3000,
        height = 1791,
        units = "px")
 
