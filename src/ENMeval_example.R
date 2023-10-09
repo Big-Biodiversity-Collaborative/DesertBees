@@ -205,15 +205,20 @@ range <- preds > threshold
 
 # View predictions (can definitely make prettier figures than these!)
 preds_spdf <- as(preds, "SpatialPixelsDataFrame")
+
 preds_df <- as.data.frame(preds_spdf)
+
 ggplot() +
   geom_raster(data = preds_df, aes(x = x, y = y, fill = layer))  + 
   scale_fill_gradientn(colours=viridis::viridis(99))
 
 # Range prediction
 raster_spdf <- as(range, "SpatialPixelsDataFrame")
+
 range_df <- as.data.frame(raster_spdf)
+
 range_df$layer <- as.factor(range_df$layer)
+
 ggplot() +
   geom_raster(data = range_df, aes(x = x, y = y, fill = layer)) +
   geom_point(data = occs, aes(x = longitude, y = latitude), 
