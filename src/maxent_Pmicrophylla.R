@@ -111,7 +111,7 @@ pres_abs_env <- as.data.frame(rbind(occ_env, absence_env))
 # p = presence/background points of species
 species_SDM <- dismo::maxent(x = pres_abs_env,
                              p = pres_abs,
-                             path = paste("output/maxent_Pflorida_outputs"), )
+                             path = paste("output/maxent_Pmicrophylla_outputs"), )
 
 # -- PREDICT AREAS --
 
