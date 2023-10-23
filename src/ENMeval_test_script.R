@@ -1,14 +1,12 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 27 September 2023
-# Last modified: 22 October 2023
+# Last modified: 23 October 2023
 
 
 
 
 # ----- ABOUT THE SCRIPT -----
-
-# *** IN PROGRESS ***
 
 # Attempts implementing ENMeval / Maxent based on ENMeval_example.R from Erin.
 
@@ -615,7 +613,7 @@ rstudioapi::savePlotAsImage(file = "output/enmeval_test_future_range.png",
 
 # ENVIRONMENTAL SUITABILITY ---
 
-# Combine plots for current and 70 years
+# Combine plots for current and 50 years
 plot_row <- plot_grid(current_dis, future_50_dis)
 
 # Generate common plot title
