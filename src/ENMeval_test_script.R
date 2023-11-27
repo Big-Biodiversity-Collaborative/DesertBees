@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 27 September 2023
-# Last modified: 23 October 2023
+# Last modified: 20 November 2023
 
 
 
@@ -14,7 +14,8 @@
   # https://jamiemkass.github.io/ENMeval/articles/ENMeval-2.0-vignette.html
 
 # Hopefully the formatting here will help me format the loop for all species in 
-  # another script. So then everything can be consolidated into one script.
+  # another script (maxent_ENMeval.R). 
+  # So then everything can be consolidated into one script.
 
 # A lot of this will be repeat from ENMeval_example.R, but typing it myself
   # helps me to learn the mechanics and concepts. But this will also include
