@@ -1,0 +1,110 @@
+ggsn 0.5.0
+==========
+
+* scale bar: support for nautical miles and statue miles. New argument: "transform" replaces the now deprecated "dd2km".
+
+* Updated examples.
+
+ggsn 0.4.12
+==========
+
+* scalebar: function's name updated in the help page.
+
+ggsn 0.4.11
+==========
+
+* scalebar has a new argument: border.size.
+
+ggsn 0.4.10
+==========
+
+* north: ggmap::inset not used anymore.
+
+ggsn 0.4.9
+==========
+
+* scalebar: nuew argument ...
+
+ggsn 0.4.8
+==========
+
+* scalebar has a new argument: dist_unit.
+
+ggsn 0.4.7
+==========
+
+* Bug fiex in scalebar for facted maps.
+
+ggsn 0.4.6
+==========
+
+* scalebar now shows "km" only at the right side of the scale.
+
+ggsn 0.4.5
+==========
+
+* Bug fixed in scalebar to avoid warning about row names.
+
+ggsn 0.4.4
+==========
+
+* Bug fixed in scalebar to preserve the order of levels when arguments facet.var and facet.lev are used.
+
+ggsn 0.4.3
+==========
+
+* Substitution of ggplot::annotation_custom by ggmap::inset in functions north and north2.
+
+ggsn 0.4.2
+==========
+
+* Bug fixed in the dd2km argument of scalebar.
+
+ggsn 0.4.1
+==========
+
+* Support for objects of class sf.
+
+* scalebar function allows customization of colors, thanks to Bart Rogiers.
+
+ggsn 0.4.0
+==========
+
+* scalebar function now support two faceting variables, thanks to Johan Junkka.
+
+* Fixed typo for north function (when location == 'topright'), thanks to Weihuang Wong.
+
+
+ggsn 0.3.1
+==========
+
+* New arguments in scalebar function to control the scale bar position when faceting. It is possible to place the scale bar just in one facet.
+
+* broom package suggested for function's examples.
+
+* maptools replaced by rgdal for shapfiles reading.
+
+ggsn 0.3.0
+==========
+
+* Functions from grid package are selectively imported.
+
+* Examples changed to avoid the use of the rgdal package (currently, some users might get "WARNING: no proj_defs.dat in PROJ.4 shared files", using this package).
+
+
+ggsn 0.2.0
+==========
+
+* 'ggplot2' includaded as a loaded dependency (previoulsy just imported).
+
+* 'plot' and 'rasterImage' functions imported from graphics.
+
+* function 'symbols' renamed as 'northSymbols' to avoid masking.
+
+* function 'theme_bln' renamed as 'blank'.
+
+
+ggsn 0.1.1
+==========
+
+* First development version.
