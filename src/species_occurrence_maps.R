@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 September 2023
-# Last modified: 18 September 2023 
+# Last modified: 28 November 2023 
 
 
 
@@ -25,6 +25,7 @@ library(mapview)
 library(png)
 library(grid)
 library(gridExtra)
+library(ggmap)
 
 
 
@@ -50,15 +51,30 @@ pm <- full_data %>%
 # ----- GENERATE MAPS -----
 
 # Centris pallida
-cp_plot <- leaflet(cp) %>% 
+cp_plot <- leaflet(cp,
+                   options = leafletOptions(zoomControl = FALSE,
+                                            attributionControl = FALSE)) %>%
   addProviderTiles("Esri.WorldImagery") %>%
-  addProviderTiles("Stamen.TonerLines") %>%
+  addTiles(
+    urlTemplate = "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.png?api_key={apikey}",
+    attribution = paste('&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> ',
+                        '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a> ',
+                        '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> ',
+                        '&copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> contributors'),
+    options = tileOptions(variant = 'stamen_toner_lines', 
+                          apikey = 'd20cf594-4437-4c63-9cc1-59f58e5a7b89')
+    ) %>%
   addCircleMarkers(
     color = "#FF3E96",
-    radius = 3.5,
+    radius = 3,
     fillOpacity = 0.8,
     stroke = FALSE
   )
+
+# Save map - leaflet maps require a different method since they show in the
+  # Viewer pane
+mapshot(cp_plot,
+        file = "output/occurrence_maps/cp_map.png")
 
 # Olneya tesota
 ot_plot <- leaflet(ot) %>% 
