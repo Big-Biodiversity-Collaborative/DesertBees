@@ -1,27 +1,29 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 27 September 2023
-# Last modified: 20 November 2023
+# Last modified: 27 November 2023
 
 
 
 
 # ----- ABOUT THE SCRIPT -----
 
-# Attempts implementing ENMeval / Maxent based on ENMeval_example.R from Erin.
+# Implements ENMeval / Maxent based on ENMeval_example.R from Erin.
 
-# Also this vignette: 
+# This vignette is also of use: 
   # https://jamiemkass.github.io/ENMeval/articles/ENMeval-2.0-vignette.html
 
-# Hopefully the formatting here will help me format the loop for all species in 
-  # another script (maxent_ENMeval.R). 
-  # So then everything can be consolidated into one script.
+# Species: Centris pallida (speciesKey = 1342915)
+  # Parameters: Climate, elevation
+
+# The formatting here will help me format the loop for all species in another 
+  # script (maxent_ENMeval.R). 
 
 # A lot of this will be repeat from ENMeval_example.R, but typing it myself
-  # helps me to learn the mechanics and concepts. But this will also include
-  # the future distribution predictions from predicted climate changes.
+  # helps me to learn the mechanics and concepts. But this also includes the 
+  # future distribution predictions from predicted climate changes.
 
-# Changes will need to be made once raster is retired.
+# Changes might need to be made once raster is retired.
   # Also transition to geodata: https://github.com/rspatial/geodata
 
 
@@ -45,7 +47,7 @@ library(geodata)
 
 
 
-# ----- LOAD DATA -----
+# ----- LOAD BEE DATA -----
 
 # Full data set
 full_set <- read.csv("data/NAm_map_data_final.csv")
@@ -71,6 +73,26 @@ geo_extent_plus <- geo_extent * 1.5
 
 
 
+# ----- LOAD ELEVATION DATA -----
+
+# DEM: Digital Elevation Model (in meters)
+
+# Data from the Commission for Environmental Cooperation (CEC)
+  # ~ 1 x 1 km resolution
+  # http://www.cec.org/north-american-environmental-atlas/elevation-2007/
+
+# Access elevation data
+dem <- rast(paste0("data/dem_1km", "/na_elevation.tif"))
+
+# Change projection to that of bioclim variables (may take a minute)
+dem <- terra::project(dem, crs(bioc))
+
+# Crop to match that of bioclim variables
+dem <- terra::crop(dem, ext(bioc))
+
+
+
+
 # ----- CURRENT PREDICTED SDM -----
 
 # DEAL WITH CLIMATE DATA --
@@ -84,6 +106,8 @@ current_env <- getData("worldclim",
 # --
 
 # *** TO DO: MOVE TO GEODATA PACKAGE - DOWNLOADING WORLDCLIM DATA ***
+
+# Server was down during first attempt
 
 # worldclim_country(country = c("US", "MX"),
 #                  var = "bio",
@@ -321,13 +345,31 @@ current_range_df$layer <- as.factor(current_range_df$layer)
 
 # Mostly same as all the code above
   # Only difference is that we're using CMIP5 climate prediction data here
+  # UPDATE 11/27/2023: 
+    # Now using projected climate for 2041-2070 from an ensemble of CMIP6 GCMs 
+    # under the SSP370 emissions scenario 
+    # Data acquisition from Jeff Oliver, at ~ 4 x 4 km resolution:
+    # https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R
 
 
 # DEAL WITH CLIMATE DATA --
 
+# Open climate data from CMIP6 ensemble
+future_env <- terra::rast(list.files(path = "data/biovars_ssp370_2041",
+                          pattern = ".tif$",
+                          full.names = TRUE))
+
+# Crop climate variables to the 150% extent of C. pallida
+future_clim_crop <- terra::crop(future_env, geo_extent_plus)
+
+# Thin occurrence records so there's only one per raster cell
+occurrences <- dismo::gridSample(cp_spatial, future_clim_crop, n = 1)
+
 # ---
 
-# *** TO DO: MOVE TO GEODATA PACKAGE - DOWNLOADING CMIP DATA ***
+# MOVE TO GEODATA PACKAGE - DOWNLOADING CMIP DATA
+
+# UPDATE: Use Jeff's forecast ensemble instead because this gets confusing
 
 # Newest climate data looks like it is CMIP6
 
@@ -359,29 +401,33 @@ current_range_df$layer <- as.factor(current_range_df$layer)
 
 # ---
 
+# TRANSITIONED TO CMIP6, SO THIS IS NO LONGER TO DATE
+
 # Download climate data from CMIP5
-future_env <- raster::getData(name = "CMIP5", 
-                              var = "bio", 
-                              res = 2.5,
-                              rcp = 45, 
-                              model = "IP", 
-                              year = 50, 
-                              path = "data") 
+# future_env <- raster::getData(name = "CMIP5", 
+#                              var = "bio", 
+#                              res = 2.5,
+#                              rcp = 45, 
+#                              model = "IP", 
+#                              year = 50, 
+#                              path = "data") 
 
 # Rename future_env bioclimatic variables to match "bio_" format
-names(future_env) = names(bio_names)
+# names(future_env) = names(bio_names)
 
 # Removing bio3, bio7, bio10, bio11, and bio17
-future_env <- dropLayer(future_env, c("bio3", "bio7", "bio10", "bio11", "bio17"))
+# future_env <- dropLayer(future_env, c("bio3", "bio7", "bio10", "bio11", "bio17"))
+
+# Maybe don't remove certain bio variables until we determine how they are
+  # related to the suitability predictions
 
 # Crop climate variables to the 150% extent of C. pallida
-future_clim_crop <- raster::crop(future_env, geo_extent_plus)
+# future_clim_crop <- raster::crop(future_env, geo_extent_plus)
 
 # clim_crop results in a RasterBrick, so we convert it back into a RasterStack
-future_clim_crop <- raster::stack(future_clim_crop)
+# future_clim_crop <- raster::stack(future_clim_crop)
 
-# Thin occurrence records so there's only one per raster cell
-occurrences <- dismo::gridSample(cp_spatial, future_clim_crop, n = 1)
+# ---
 
 
 # PSEUDO-ABSENCE POINTS --
