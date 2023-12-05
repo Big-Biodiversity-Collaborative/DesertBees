@@ -24,6 +24,8 @@
 # ----- LOAD DEPENDENCIES -----
 
 library(sp)
+library(raster)
+library(dismo)
 library(terra)
 library(raptr)
 library(dplyr)
@@ -96,19 +98,13 @@ dem <- terra::project(dem, crs(future_clim))
 # Crop to match that of bioclim variables
 dem <- terra::crop(dem, ext(future_clim))
 
-# The following is important so that both the climate and elevation can be used
-  # in ENMevaluate() later. For both to be used, the CRS and the elevation
-  # should be matching.
+# Resample DEM so that extent can match that of the climate data
+# (Important for stacking SpatRasters)
+dem <- resample(dem, future_clim)
 
-# Check that the CRS are matching
-crs(future_clim)
-crs(dem)
-
-# Check that extents are matching
-ext(future_clim)
+# Check extents
 ext(dem)
-
-# 
+ext(future_clim)
 
 
 
@@ -169,6 +165,7 @@ other.settings <- list(validation.bg = "partition")
 
 # For parallel processing, use 2 fewer cores than are available
 # (Creates less load on the CPU?)
+# Note to self: There are 20 total according to the ENMevaluate messages
 num_cores <- parallel::detectCores() - 2
 
 
@@ -192,8 +189,132 @@ results <- ENMevaluate(occs = occurrences,
 
 # ----- FIND BEST MODEL -----
 
+# Look at table with evaluation metrics for each set of tuning parameters
+eval_table <- results@results
+
+# Save this table
+write.csv(eval_table, "output/enmeval_futurepred_results.csv")
+
+# Filter for optimal model
+optimal <- results@results %>%
+  filter(cbi.val.avg > 0) %>%
+  filter(or.10p.avg == min(or.10p.avg)) %>%
+  filter(auc.val.avg == max(auc.val.avg))
+
+# Extract the optimal model
+best <- results@models[[optimal$tune.args]]
 
 
 
+
+# ----- USING OPTIMAL MODEL FOR PREDICTIONS -----
+
+# Convert predictors from SpatRaster to RasterStack
+# (enm.maxnet only takes raster objects at the moment)
+envs_r <- raster::stack(envs)
+
+# (A) DISTRIBUTION:
+
+# Generate raster with predicted suitability values
+pred_vals <- enm.maxnet@predict(best, 
+                                envs_r,
+                                list(pred.type = "cloglog",
+                                     doClamp = FALSE))
+
+# (B) RANGE:
+
+# Extract predicted suitability values for occurrence locations
+pred_occ <- raster::extract(pred_vals, occurrences)
+
+# Extract predicted suitability values for background locations
+pred_bg <- raster::extract(pred_vals, background)
+
+# Evaluate models - gives ModelEvaluation object
+eval <- dismo::evaluate(pred_occ, pred_bg)
+
+# Use a max(spec + sens) threshold to convert probabilities into binary values 
+# (1 = part of species' predicted range; 0 = outside of range) - gives a Value
+threshold <- dismo::threshold(eval, stat = "spec_sens")
+
+# For predicting range, find predicted values greater than the threshold
+range <- pred_vals > threshold
+
+
+
+
+# ----- PREPARE DATA FOR PLOTTING -----
+
+# Environmental suitability plots
+pred_spdf <- as(pred_vals, "SpatialPixelsDataFrame")
+
+pred_df <- as.data.frame(pred_spdf)
+
+# Range plots
+raster_spdf <- as(range, "SpatialPixelsDataFrame")
+
+range_df <- as.data.frame(raster_spdf)
+
+range_df$layer <- as.factor(range_df$layer)
+
+
+
+
+# ----- PLOT DISTRIBUTION MAPS -----
+
+# Collect data for map borderlines
+wrld <- ggplot2::map_data("world")
+
+# Set boundaries where map should be focused
+xmax <- max(pred_df$x)
+xmin <- min(pred_df$x)
+ymax <- max(pred_df$y)
+ymin <- min(pred_df$y)
+
+# Environmental suitability prediction map
+ggplot() +
+  geom_raster(data = future_pred_df, 
+              aes(x = x, y = y, fill = layer))  + 
+  scale_fill_gradientn(colours=viridis::viridis(99)) +
+  coord_fixed(xlim = c(xmin, xmax), 
+              ylim = c(ymin, ymax), 
+              expand = F) +
+  scale_size_area() +
+  borders("state") +
+  labs(title = bquote(bold("CMIP6 Climate Predictions")),
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Environmental \nSuitability") + 
+  theme(axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        legend.box.background = element_rect(color = NA),
+        legend.position = "bottom",
+        panel.background = element_rect(fill = "grey95"))
+
+# Save
+ggsave(file = "output/enmeval_future_distribution.png",
+       width = 25,
+       height = 15,
+       units = "cm")
+
+# Range prediction map
+ggplot() +
+  geom_raster(data = future_range_df, 
+              aes(x = x, y = y, fill = layer)) +
+  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
+  coord_fixed(xlim = c(xmin2, xmax2), 
+              ylim = c(ymin2, ymax2), 
+              expand = F) +
+  scale_size_area() +
+  borders("state") +
+  labs(title = bquote(bold("50 Years into the Future")),
+       x = "Longitude",
+       y = "Latitude") + 
+  theme(legend.position = "none")
+
+# Save
+ggsave(file = "output/enmeval_test_future_range.png",
+       width = 25,
+       height = 15,
+       units = "cm")
 
 
