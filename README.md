@@ -10,7 +10,7 @@ The distributions are modeled using Maximum Entropy (MaxEnt) and the most fittin
 
 [Insert more description later]
 
-These figures will help assess possible changes in distribution overlap to happen over the next 70 years, which can aid in planning conservation .
+These figures will help assess possible changes in distribution overlap to happen over as climate change ensues, which can aid in planning conservation efforts.
 
 ## 📚 Libraries
 
@@ -28,4 +28,4 @@ The following R packages are used (and scripts will use all, or some, of these):
 
 ***images:*** Contains reference pictures for filtering the data.
 
-*Last updated: October 9, 2023*
+*Last updated: December 11, 2023*

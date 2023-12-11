@@ -1,33 +1,35 @@
 ## Description of R Script Files
 
--   **maxent.R**
+*Currently reorganizing \~*
 
-    Runs Maximum Entropy model on Centris pallida observations in NAm_map_data_final.csv. Current climate data is from [WorldClim](https://worldclim.org/), and predicted climate data is from the [Coupled Model Intercomparison Project 5 (CMIP5)](https://esgf-node.llnl.gov/projects/cmip5/). Output is stored in the [outputs folder](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/output) under maxent_outputs. Figures (also in the outputs folder) include:
+This folder contains the code used in data cleaning / analysis, and for figure generation.
 
-    -   current_cpallida_sdm.jpg
+-   **get_GBIF.R**
 
-    -   current_future_SDM.jpg
+    Retrieves data from the [Global Biodiversity Information Facility](https://www.gbif.org/) of four species:
 
-    -   future_cpallida_sdm_50yrs.jpg
+    -   Desert / Digger Bee (*Centris pallida*)
 
-    -   future_cpallida_sdm_70yrs.jpg
+    -   Blue Palo Verde (*Parkinsonia florida*)
 
--   **NAm_data_further_reduced.R**
+    -   Foothill Palo Verde (*Parkinsonia microphylla*)
 
-    Reduces NAm_map_data.csv to select species: *C. pallida*, *O. tesota*, *P. florida*, and *P. microphylla*. Draws boundary around observations and removes outliers based on requests -- desired boundary images are stored in [images](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/images) as \~\_bounds.png files.
+    -   Desert Ironwood (*Olneya tesota*)
 
--   **prelim.R**
+    The data is processed to remove those with no geographic coordinates (latitude and longitude), duplicates, and other characteristics that may contribute to the accuracy and analysis of the data. The cleaning includes consideration of the species' documented range, so a polygon is also drawn around the observations and the outliers are excluded from the analysis. This script creates the following files:
 
-    Pulls GBIF data and generates the following raw and cleaned data files, stored in the [data folder](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/main/data):
+    -   data/GBIF/cleaned_species.csv
 
-    -   full_map_data.csv
+    ------------------------------------------------------------------------
 
-    -   gbif_rawdata_otesota.csv
+-   **get_climate.R**
 
-    -   map_data.csv
+    [Description]
 
-    -   map_data2.csv
+    ------------------------------------------------------------------------
 
-    -   NAm_map_data.csv
+-   **predict.R**
 
-    Also generates a leaflet() map of the occurrence data from NAm_map_data.csv. With each species having their own point color.
+    [Description]
+
+    Separate into current and future SDM files?

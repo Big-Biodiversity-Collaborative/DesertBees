@@ -1,27 +1,25 @@
 ## Description of Data Files
 
-Excluded (by .gitignore) is gbif_rawdata_full.csv due to excessively large file size. Also excluded are climate data files from WorldClim (wc2-5 files) and the Coupled Model Intercomparison Project 5 (CMIP5) (cmip5 files).
+*Currently reorganizing \~*
 
--   **full_map_data.csv**
+-   **GBIF:** Organism data from the [Global Biodiversity Information Facility](https://www.gbif.org/)
 
-    Combines data from map_data.csv and map_data2.csv.
+    -   The zip file is the raw download after requesting the data from GBIF.
 
--   **gbif_rawdata_otesota.csv**
+    -   cleaned_species.csv
 
-    Raw GBIF data on *Olneya tesota* (taxonKey: 2974564).
+    -   raw_species.csv
 
--   **map_data.csv**
+-   **cmip6:** Predicted climate data from the [Coupled Model Intercomparison Project, Phase 6](https://wcrp-cmip.org/cmip-phase-6-cmip6/)
 
-    Reduced version of gbif_rawdata_full.csv (not included in repository). Contains data on *Centris pallida* (1342915), *Parkinsonia florida* (5359949), *Parkinsonia microphylla* (5359945), *Parkinsonia aculeata* (5357217), *Larrea tridentata* (7568403), *Olneya tesota* (2974564), and *Cercidium spp.* (NA). Columns include year, month, day, speciesKey, genus, species, latitude, longitude, and countryCode.
+    -   Data is an ensemble of the CMIP6 climate models under the SSP370 emissions scenario for 2041-2070, which was done by Jeff Oliver here: [SwallowtailClimateChange/src/data/prep-forecast-data.R at main · Big-Biodiversity-Collaborative/SwallowtailClimateChange (github.com)](https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R).
 
--   **map_data2.csv**
+    -   [Description]
 
-    Reduced version of gbif_rawdata_otesota.csv. Contains data on *Olneya tesota* (2974564). Columns include year, month, day, speciesKey, genus, species, latitude, longitude, and countryCode.
+-   **worldclim:** Current climate data from [WorldClim](https://worldclim.org/)
 
--   **NAm_map_data.csv**
+    -   [Description]
 
-    Filters full_map_data.csv to observations where countryCode is equal to "US" (United States) or "MX" (Mexico).
+-   **DEM:** Elevation data from the [North American Environmental Atlas](http://www.cec.org/north-american-environmental-atlas/elevation-2007/)
 
--   **NAm_map_data_final.csv**
-
-    Further filters NAm_map_data.csv based on Dr. Buchmann's border drawings (see [images folder](https://github.com/Big-Biodiversity-Collaborative/DesertBees/tree/d21f59cedcddf721dd1e7b97fd74326fd138b521/images)).
+    -   [Description]

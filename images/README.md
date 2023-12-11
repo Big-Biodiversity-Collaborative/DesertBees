@@ -1,5 +1,7 @@
 ## What are these images of?
 
+Do I even need this folder? - Maybe remove it...
+
 -   **Borders drawn by Dr. Stephen Buchmann on raw data maps**
 
     These boundaries show what data points were deemed reasonable to keep for each species. Points under or outside of the yellow border were removed from the data frame.
