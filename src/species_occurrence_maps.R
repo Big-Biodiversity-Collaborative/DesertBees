@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 September 2023
-# Last modified: 28 November 2023 
+# Last modified: 15 December 2023 
 
 
 
@@ -9,23 +9,22 @@
 # ----- ABOUT THE SCRIPT -----
 
 # Generate occurrence maps for:
-    # Centris pallida (speciesKey: 1342915)
-    # Olneya tesota (speciesKey: 2974564)
-    # Parkinsonia florida (speciesKey: 5359949)
-    # Parkinsonia microphylla (speciesKey: 5359945)
+  # Centris pallida (speciesKey: 1342915)
+  # Olneya tesota (speciesKey: 2974564)
+  # Parkinsonia florida (speciesKey: 5359949)
+  # Parkinsonia microphylla (speciesKey: 5359945)
 
 
 
 
 # ----- LOAD LIBRARIES -----
 
-library(readr)
-library(leaflet)
-library(mapview) 
+library(dplyr)
+library(ggplot2)
+library(leaflet) 
+library(mapview)
 library(png)
-library(grid)
-library(gridExtra)
-library(ggmap)
+library(cowplot)
 
 
 
@@ -33,111 +32,110 @@ library(ggmap)
 # ----- LOAD DATA -----
 
 # Read data set
-full_data <- read_csv("data/NAm_map_data_final.csv")
+data <- read.csv("data/GBIF/cleaned_species.csv")
 
-# Separate species into subsets
-cp <- full_data %>%
-  filter(speciesKey == 1342915) # 861 observations
-ot <- full_data %>%
-  filter(speciesKey == 2974564) # 4090 observations
-pf <- full_data %>%
-  filter(speciesKey == 5359949) # 3172 observations
-pm <- full_data %>%
-  filter(speciesKey == 5359945) # 3770 observations
+# Separate species for individual plots
+cp <- data %>%
+  filter(speciesKey == 1342915) # 289 observations
+ot <- data %>%
+  filter(speciesKey == 2974564) # 4180 observations
+pf <- data %>%
+  filter(speciesKey == 5359949) # 3526 observations
+pm <- data %>%
+  filter(speciesKey == 5359945) # 3967 observations
 
 
 
 
 # ----- GENERATE MAPS -----
 
-# Centris pallida
-cp_plot <- leaflet(cp,
-                   options = leafletOptions(zoomControl = FALSE,
-                                            attributionControl = FALSE)) %>%
-  addProviderTiles("Esri.WorldImagery") %>%
-  addTiles(
-    urlTemplate = "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.png?api_key={apikey}",
-    attribution = paste('&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> ',
-                        '&copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a> ',
-                        '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> ',
-                        '&copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> contributors'),
-    options = tileOptions(variant = 'stamen_toner_lines', 
-                          apikey = 'd20cf594-4437-4c63-9cc1-59f58e5a7b89')
-    ) %>%
-  addCircleMarkers(
-    color = "#FF3E96",
-    radius = 3,
-    fillOpacity = 0.8,
-    stroke = FALSE
-  )
+# C. PALLIDA
+cp_plot <- 
+  leaflet(cp,
+          options = leafletOptions(zoomControl = FALSE,
+                                   attributionControl = FALSE)) %>%
+  addProviderTiles("Esri.WorldTopoMap") %>%
+  addCircleMarkers(color = "#EE7600",
+                   radius = 3,
+                   fillOpacity = 0.8,
+                   stroke = FALSE)
 
-# Save map - leaflet maps require a different method since they show in the
-  # Viewer pane
+# Save map
 mapshot(cp_plot,
         file = "output/occurrence_maps/cp_map.png")
 
-# Olneya tesota
-ot_plot <- leaflet(ot) %>% 
-  addProviderTiles("Esri.WorldImagery") %>%
-  addProviderTiles("Stamen.TonerLines") %>%
-  addCircleMarkers(
-    color = "#E066FF",
-    radius = 3.5,
-    fillOpacity = 0.8,
-    stroke = FALSE
-  )
+# ---
 
-# Parkinsonia florida
-pf_plot <- leaflet(pf) %>% 
-  addProviderTiles("Esri.WorldImagery") %>%
-  addProviderTiles("Stamen.TonerLines") %>%
-  addCircleMarkers(
-    color = "#FFA500",
-    radius = 3.5,
-    fillOpacity = 0.8,
-    stroke = FALSE
-  )
+# O. TESOTA
+ot_plot <- leaflet(ot,
+                   options = leafletOptions(zoomControl = FALSE,
+                                            attributionControl = FALSE)) %>%
+  addProviderTiles("Esri.WorldTopoMap") %>%
+  addCircleMarkers(color = "#4F77DC",
+                   radius = 3,
+                   fillOpacity = 0.8,
+                   stroke = FALSE)
 
-# Parkinsonia microphylla
-pm_plot <- leaflet(pm) %>% 
-  addProviderTiles("Esri.WorldImagery") %>%
-  addProviderTiles("Stamen.TonerLines") %>%
-  addCircleMarkers(
-    color = "#00FFFF",
-    radius = 3.5,
-    fillOpacity = 0.8,
-    stroke = FALSE
-  )
+# Save map
+mapshot(ot_plot,
+        file = "output/occurrence_maps/ot_map.png")
+
+# ---
+
+# P. FLORIDA
+pf_plot <- leaflet(pf,
+                   options = leafletOptions(zoomControl = FALSE,
+                                            attributionControl = FALSE)) %>%
+  addProviderTiles("Esri.WorldTopoMap") %>%
+  addCircleMarkers(color = "#7B68EE",
+                   radius = 3,
+                   fillOpacity = 0.8,
+                   stroke = FALSE)
+
+# Save map
+mapshot(pf_plot,
+        file = "output/occurrence_maps/pf_map.png")
+
+# ---
+
+# P. MICROPHYLLA
+pm_plot <- leaflet(pm,
+                   options = leafletOptions(zoomControl = FALSE,
+                                            attributionControl = FALSE)) %>%
+  addProviderTiles("Esri.WorldTopoMap") %>%
+  addCircleMarkers(color = "#CD1076",
+                   radius = 3,
+                   fillOpacity = 0.8,
+                   stroke = FALSE)
+
+# Save map
+mapshot(pm_plot,
+        file = "output/occurrence_maps/pm_map.png")
 
 
 
 
 # ----- PLOT MAPS IN ONE FIGURE -----
 
-# Save maps as .png files
-mapshot(cp_plot, file = "output/cp_occ_map.png")
-mapshot(ot_plot, file = "output/ot_occ_map.png")
-mapshot(pf_plot, file = "output/pf_occ_map.png")
-mapshot(pm_plot, file = "output/pm_occ_map.png")
-
-# Re-open images
-cp_plot <- readPNG("output/occurence_maps/cp_occ_map.png")
-ot_plot <- readPNG("output/occurence_maps/ot_occ_map.png")
-pf_plot <- readPNG("output/occurence_maps/pf_occ_map.png")
-pm_plot <- readPNG("output/occurence_maps/pm_occ_map.png")
+# Re-open images for arranging
+cp_plot <- readPNG("output/occurrence_maps/cp_map.png")
+ot_plot <- readPNG("output/occurrence_maps/ot_map.png")
+pf_plot <- readPNG("output/occurrence_maps/pf_map.png")
+pm_plot <- readPNG("output/occurrence_maps/pm_map.png")
 
 # Arrange images in one one plot
-plots <- arrangeGrob(
-  rasterGrob(cp_plot), rasterGrob(ot_plot), 
-  rasterGrob(pf_plot), rasterGrob(pm_plot),
-  ncol = 2,
-  padding = 1
-)
+plots <- plot_grid(rasterGrob(cp_plot), rasterGrob(ot_plot), 
+                   rasterGrob(pf_plot), rasterGrob(pm_plot),
+                   labels = c("A", "B", "C", "D"),
+                   label_size = 20,
+                   ncol = 2)
 
 # Save plot
-ggsave2("output/occurence_maps/spp_occ_maps.png", plots)
-
-# Note: Needed to import to Microsoft Powerpoint to add letters to figure
+ggsave("output/occurrence_maps/species_occurrence_maps.png", 
+       plots,
+       width = 20,
+       height = 15,
+       units = "cm")
 
 
 
