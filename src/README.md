@@ -22,42 +22,6 @@ This folder contains the code used in data cleaning / analysis, and for figure g
 
     ------------------------------------------------------------------------
 
--   **get_predictors.R**
-
-    Prepares predictors for use in Maxent model. Some files are downloaded directly from the site, and others are retrieved using packages such as `geodata`. The predictors being used here include:
-
-    -   *WorldClim (for current climate)*
-
-        -   Site: <https://test2.biogeo.ucdavis.edu/wc2/#/>
-
-        -   \~ 1x1 km resolution
-
-    -   *CMIP6 (ensemble from Jeff Oliver) (for predicted climate)*
-
-        -   Site: <https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R>
-
-        -   Coupled Model Intercomparison Project (CMIP), Phase 6
-
-        -   2041-2070
-
-        -   SSP370
-
-        -   \~ 4x4 km resolution
-
-    -   *North American Environmental Atlas (for elevation)*
-
-        -   Site: <http://www.cec.org/north-american-environmental-atlas/elevation-2023/>
-
-        -   Digital Elevation Model (DEM)
-
-        -   \~ 1x1 km resolution
-
-    The resolutions and coordinate reference systems (CRS) are matched so a stack can be formed for use in `ENMevaluate`'s Maxent. This script creates the following files:
-
-    -   [Insert files later]
-
-        ------------------------------------------------------------------------
-
 -   **run_maxent.R**
 
     [Description]
