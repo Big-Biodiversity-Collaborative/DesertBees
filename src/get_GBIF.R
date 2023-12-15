@@ -355,6 +355,12 @@ cleaned_data <- semi_join(data, cleaned_coords)
 
 # 11962 observations, 11 variables
 
+# Number of observations:
+  # C. pallida = 289
+  # O. tesota = 4180
+  # P. florida = 3526
+  # P. microphylla = 3967
+
 # Save as csv
 write.csv(cleaned_data, "data/GBIF/cleaned_species.csv", row.names = FALSE)
 
