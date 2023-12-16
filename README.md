@@ -20,12 +20,12 @@ The following R packages are used (and scripts will use all, or some, of these):
 
 ## 📂 Folder Contents
 
-***data:*** Contains the original downloads of raw and filtered data from GBIF ([Global Biodiversity Information Facility](https://www.gbif.org/)). Not included due to excessively large size are the climate data used for modeling. The climate data, which have been excluded using gitignore, are from [WorldClim](https://worldclim.org/) (wc2-5 files) and the [Coupled Model Intercomparison Project 5](https://esgf-node.llnl.gov/projects/cmip5/) (CMIP5) (cmip5 files). The data in this folder are used to produce the figures.
+***data:*** Contains the raw and cleaned data from the [Global Biodiversity Information Facility](https://www.gbif.org/) (GBIF). The climate data, which have been retrieved and processed by Jeff Oliver, are from [WorldClim (version 2.1)](http://www.worldclim.com/version2) and the [Coupled Model Intercomparison Project, Phase 6](https://wcrp-cmip.org/cmip-phase-6-cmip6/) (CMIP6). Other data used in the modeling may be stored here as well. The data in this folder are used in the Maxent modeling and generation of the figures.
 
-***src:*** Contains code for filtering the data, running models, and generating figures.
+***src:*** Contains code for cleaning the data, running models, and generating figures.
 
 ***output:*** Contains figures and model outputs.
 
-***images:*** Contains reference pictures for filtering the data.
+***ShinyDesertBees:*** [Pending]
 
-*Last updated: December 11, 2023*
+*Last updated: December 15, 2023*
