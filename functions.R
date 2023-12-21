@@ -242,7 +242,8 @@ sdm <- function(species, clim, current_or_future_sdm) {
   print("Saving .csv file for predicted distribution.")
   
   write.csv(pred_df, 
-            paste("output/", spp_list[i], "/", current_or_future_sdm, "_distribution.csv", sep = ""))
+            paste("output/", spp_list[i], "/", current_or_future_sdm, "_distribution.csv", sep = ""),
+            row.names = FALSE)
   
   # (B) RANGE:
   
@@ -255,7 +256,8 @@ sdm <- function(species, clim, current_or_future_sdm) {
   print("Saving .csv file for predicted range.")
   
   write.csv(range_df, 
-            paste("output/", spp_list[i], "/", current_or_future_sdm, "_range.csv", sep = ""))
+            paste("output/", spp_list[i], "/", current_or_future_sdm, "_range.csv", sep = ""),
+            row.names = FALSE)
   
   # Note that process is done
   print("Predictions have been saved in output folder.")
