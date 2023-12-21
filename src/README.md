@@ -24,15 +24,18 @@ This folder contains the code used in data cleaning / analysis, and for figure g
 
 -   **run_maxent.R**
 
-    [Description]
+    Runs the Maxent model on each of the four species. The code is separated into current (using [WorldClim](http://www.worldclim.com/version2)) and future (using [CMIP6)](https://wcrp-cmip.org/cmip-phase-6-cmip6/) prediction loops, and the results are stored in the following folders under output/:
 
-    Separate into current and future SDM files?
+    -   Centris pallida
+
+    -   Olneya tesota
+
+    -   Parkinsonia florida
+
+    -   Parkinsonia microphylla
 
     ------------------------------------------------------------------------
 
-```{=html}
-<!-- -->
-```
 -   **species_occurrence_maps.R**
 
     Generates occurrence maps for each of the four species, and makes a composite map as well. This script stores the maps in the following folder:

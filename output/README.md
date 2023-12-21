@@ -1,3 +1,3 @@
 ## Description of Output Files
 
-Definitely need to organize this!
+Each folder contains the resulting prediction output from the Maxent modeling (found in src/run_maxent.R). The .csv files are used to generate the distribution and range plots.
