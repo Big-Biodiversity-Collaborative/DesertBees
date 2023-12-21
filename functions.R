@@ -260,12 +260,6 @@ sdm <- function(species, clim, current_or_future_sdm) {
   # Note that process is done
   print("Predictions have been saved in output folder.")
   
-  
-  
-  # -- NOTIFY USER THAT THIS IS DONE --
-  
-  print(paste(current_or_future_sdm, "maxent model is done for:", spp_list[i]))
-  
 }
 
 

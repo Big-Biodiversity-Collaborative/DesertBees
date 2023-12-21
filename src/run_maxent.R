@@ -1,18 +1,28 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 18 December 2023
+# Last modified: 21 December 2023
 
 
 
 
 # -- ABOUT --
 
-# Runs Maxent (ENMeval)
+# Runs Maxent (ENMeval) on four species:
+
+  # Common name (Scientific name) - Taxon key
+  # Desert / Digger Bee (Centris pallida) - 1342915
+  # Blue Palo Verde (Parkinsonia florida) - 5359949
+  # Foothill Palo Verde (Parkinsonia microphylla) - 5359945
+  # Desert Ironwood (Olneya tesota) - 2974564
+
+# There is script for a:
   # Current SDM
   # Future SDM
 
-# Function for maxent code is in functions.R
+# (SDM = Species Distribution Model)
+
+# Code for sdm() is in functions.R
 
 
 
@@ -72,6 +82,7 @@ for (i in 1:4) {
   
   # Which species did we finish
   print(paste("Finished Maxent for:", spp_list[i]))
+  print("-------------------------")
   
 }
 
@@ -95,14 +106,12 @@ for (i in 1:4) {
   # Which species are we on
   print(paste("Currently processing data for:", spp_list[i]))
   
-  # Number of observations (for generating number of background points)
-  num_obs <- nrow(species)
-  
   # Run through Maxent
   sdm(species = species, clim = clim, current_or_future_sdm = "future")
   
   # Which species did we finish
   print(paste("Finished Maxent for:", spp_list[i]))
+  print("-------------------------")
   
 }  
   
