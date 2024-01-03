@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 18 December 2023
+# Last modified: 3 January 2024
 
 
 
@@ -188,6 +188,12 @@ sdm <- function(species, clim, current_or_future_sdm) {
   
   # Extract the optimal model
   best <- results@models[[optimal$tune.args]]
+  
+  # [For initial checks]
+  # Find non-zero coefficients and save file
+  betas <- as.data.frame(best$betas)
+  write.csv(betas, 
+            paste("output/", spp_list[i], "/", current_or_future_sdm, "_beta_values.csv", sep = ""))
   
   # Note that process is done
   print("Optimal model extracted.")
