@@ -41,7 +41,7 @@ library(ggplot2)
 # ----- LOAD SPECIES DATA -----
 
 # Full data set
-data <- read.csv("data/ADS_versions/GBIF/cleaned_species.csv")
+data <- read.csv("data/ADS_versions/cleaned_species.csv")
 
 # Only need the latitude and longitude for the model
 data <- data %>%

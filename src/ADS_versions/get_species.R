@@ -17,7 +17,7 @@
 
 # 2) Cleans data
 
-# 3) Saves cleaned data as: data/ADS_versions/GBIF/cleaned_species.csv
+# 3) Saves cleaned data as: data/ADS_versions/cleaned_species.csv
 
 
 
@@ -37,7 +37,7 @@ library(sp)
 
 # ----- GET DATA -----
 
-# Request full occurrence record of orgnanisms from GBIF
+# Request full occurrence record of organisms from GBIF
 
 # NOTE: occ_download requires a setup with GBIF account on a .Renviron file
 # See https://docs.ropensci.org/rgbif/articles/gbif_credentials.html
@@ -52,30 +52,30 @@ occ_download(pred_in("speciesKey", 1342915))
 # Username: tmcruz
 # E-mail: tmcruz@arizona.edu
 # Format: DWCA
-# Download key: 0022014-231120084113126
-# Created: 2023-12-07T16:56:19.767+00:00
+# Download key: 0045111-231120084113126
+# Created: 2024-01-04T19:06:38.309+00:00
 
 # Citation Info:  
 # Please always cite the download DOI when using this data.
 # https://www.gbif.org/citation-guidelines
-# DOI: 10.15468/dl.wzea7y
+# DOI: 10.15468/dl.sg6wbx
 
 # Citation:
 # GBIF Occurrence Download 
-# https://doi.org/10.15468/dl.wzea7y
-# Accessed from R via rgbif 
+# https://doi.org/10.15468/dl.sg6wbx
+# Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2024-01-04
 
 # Retrieve download (replace with your own download key)
 raw_data <- 
-  occ_download_get(key = "0022014-231120084113126", path = "data/ADS_versions/GBIF/") %>%
+  occ_download_get(key = "0045111-231120084113126", path = "data/ADS_versions/") %>%
   occ_download_import()
 
 # Below is to help track changes in data while we clean:
-# _ observations, _ variables
+# 1093 observations, 212 variables
 
 # Save raw data as csv
 # (row.names = FALSE removes the random column that shows up if you don't do this)
-write.csv(raw_data, "data/ADS_versions/GBIF/raw_species.csv", 
+write.csv(raw_data, "data/ADS_versions/raw_species.csv", 
           row.names = FALSE)
 
 
@@ -84,9 +84,9 @@ write.csv(raw_data, "data/ADS_versions/GBIF/raw_species.csv",
 # ----- CLEAN DATA: FILTERING -----
 
 # If starting here, read in the raw data (downloaded on _ January 2024)
-raw_data <- read.csv("data/ADS_versions/GBIF/raw_species.csv")
+raw_data <- read.csv("data/ADS_versions/raw_species.csv")
 
-# _ observations, _ variables
+# 1093 observations, 212 variables
 
 # Clean data
 data <- raw_data %>%
@@ -103,7 +103,7 @@ data <- raw_data %>%
            datasetKey, 
            .keep_all = TRUE)
 
-# _ observations, _ variables
+# 298 observations, 212 variables
 
 # Reduce columns to what is / might be necessary for analyses / figures
 data <- data %>%
@@ -112,7 +112,7 @@ data <- data %>%
          longitude = decimalLongitude) %>%
   arrange(species, kingdom, year, month, day)
 
-# _ observations, _ variables
+# 298 observations, 11 variables
 
 # Column numbers identified using which(colnames(data) == "column_name")
 # 61 = year
@@ -133,7 +133,7 @@ data <- data %>%
 # ----- SAVE DATA -----
 
 # Save as csv
-write.csv(cleaned_data, "data/ADS_versions/GBIF/cleaned_species.csv", 
+write.csv(data, "data/ADS_versions/cleaned_species.csv", 
           row.names = FALSE)
 
 # ---
