@@ -1,82 +1,80 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 28 November 2023
-# Last modified: 29 November 2023
+# Last modified: 4 January 2024
 
 
 
 
-# ----- ABOUT THE SCRIPT -----
+# ----- ABOUT -----
 
-# Introducing CMIP6 and DEM data involved transitioning to terra packages too.
+# Code for teaching purposes (Applied Data Science)
 
-# So, this script rewrites the future predictions using those.
+# This is the same code used in run_maxent.R and distribution_and_range_maps.R,
+# but has been re-formatted so that the following is all in one script:
 
-# Workflow:
-  # Load GBIF bee data
-  # Load CMIP6 climate projection data
-  # Load DEM data
-  # 
+  # CURRENT species distribution model
+  # Generating plots of predictions
 
 
 
 
-# ----- LOAD DEPENDENCIES -----
+# ----- LOAD LIBRARIES -----
 
+# For modeling
 library(sp)
 library(raster)
 library(dismo)
 library(terra)
 library(raptr)
-library(dplyr)
 library(ENMeval)
 
+# For data prep
+library(dplyr)
+
+# For plotting
+library(ggplot2)
 
 
 
-# ----- LOAD BEE DATA -----
+
+# ----- LOAD SPECIES DATA -----
 
 # Full data set
-full_set <- read.csv("data/NAm_map_data_final.csv")
+data <- read.csv("data/ADS_versions/GBIF/cleaned_species.csv")
 
-# Only C. pallida
-cp_data <- full_set %>%
-  filter(speciesKey == 1342915) %>%
+# Only need the latitude and longitude for the model
+data <- data %>%
   dplyr::select(longitude, latitude)
-
-# Number of observations
-num_obs <- nrow(cp_data)
 
 # Convert to spatial points (data now represents geographical location)
 # CRS: Coordinate Reference System
-cp_data <- SpatialPoints(cp_data,
+sp_data <- SpatialPoints(data,
                          proj4string = CRS("+proj=longlat"))
 
-# Determine extent of C. pallida presence data in order to crop the climate data
+# Determine extent of species presence data in order to crop the climate data
 # to appropriate values
-geo_extent <- ext(cp_data)
+geo_extent <- ext(sp_data)
 
 # Expand extent by 50% to account for predictions outside of the expected range
-geo_extent_plus <- geo_extent * 1.5
+geo_extent <- geo_extent * 1.5
 
 
 
 
 # ----- LOAD CLIMATE DATA -----
 
-# Using projected climate for 2041-2070 from an ensemble of CMIP6 GCMs 
-  # under the SSP370 emissions scenario 
+# Data acquisition from WorldClim 2.1 
+# Done by Jeff Oliver, at ~ 21 x 21 km resolution:
+# https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R
 
-# Data acquisition from Jeff Oliver, at ~ 4 x 4 km resolution:
-  # https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R
-
-# Open climate data from CMIP6 ensemble
-future_clim <- terra::rast(list.files(path = "data/biovars_ssp370_2041",
+# Open climate data
+clim <- terra::rast(list.files(path = "data/WORLDCLIM",
                                       pattern = ".tif$",
                                       full.names = TRUE))
 
-# Crop climate variables to the 150% extent of C. pallida
-future_clim <- terra::crop(future_clim, geo_extent_plus)
+# Crop climate variables to the 150% extent of species
+clim <- terra::crop(clim, geo_extent)
 
 
 
@@ -85,26 +83,28 @@ future_clim <- terra::crop(future_clim, geo_extent_plus)
 
 # DEM: Digital Elevation Model (in meters)
 
+# Elevation data may also help in predicting where else species might occur
+
 # Data from the Commission for Environmental Cooperation (CEC)
-  # ~ 1 x 1 km resolution
-  # http://www.cec.org/north-american-environmental-atlas/elevation-2007/
+# ~ 1 x 1 km resolution
+# http://www.cec.org/north-american-environmental-atlas/elevation-2007/
 
 # Access elevation data
-dem <- rast(paste0("data/dem_1km", "/na_elevation.tif"))
+dem <- rast(paste0("data/DEM", "/northamerica_elevation_cec_2023.tif"))
 
 # Change projection to that of bioclim variables (may take a minute)
-dem <- terra::project(dem, crs(future_clim))
+dem <- terra::project(dem, crs(clim))
 
 # Crop to match that of bioclim variables
-dem <- terra::crop(dem, ext(future_clim))
+dem <- terra::crop(dem, ext(clim))
 
 # Resample DEM so that extent can match that of the climate data
 # (Important for stacking SpatRasters)
-dem <- resample(dem, future_clim)
+dem <- resample(dem, clim)
 
-# Check extents
+# Check extents (if they don't match, we won't be able to use both in the model)
 ext(dem)
-ext(future_clim)
+ext(clim)
 
 
 
@@ -112,7 +112,7 @@ ext(future_clim)
 # ----- PREPARE OCCURRENCE POINTS -----
 
 # Thin occurrence records so there's only one per raster cell
-occurrences <- dismo::gridSample(cp_data, future_clim, n = 1)
+occurrences <- dismo::gridSample(sp_data, clim, n = 1)
 
 
 
@@ -120,7 +120,7 @@ occurrences <- dismo::gridSample(cp_data, future_clim, n = 1)
 # ----- SET SEED -----
 
 # For reproducibility in the remainder of the script
-set.seed(2023)
+set.seed(2024)
 
 
 
@@ -128,7 +128,8 @@ set.seed(2023)
 #  ----- PREPARE BACKGROUND POINTS -----
 
 # Generate random points
-background <- raptr::randomPoints(future_clim[[1]], n = num_obs * 15)
+# https://besjournals.onlinelibrary.wiley.com/doi/10.1111/j.2041-210X.2011.00172.x
+background <- raptr::randomPoints(clim[[1]], n = 10000)
 
 # Apply column names from occurrences to background
 colnames(background) <- colnames(occurrences)
@@ -137,6 +138,9 @@ colnames(background) <- colnames(occurrences)
 
 
 # ----- PARAMETER SETTING AND K-FOLD BLOCKS -----
+
+# Helpful guide to Maxent:
+# https://nsojournals.onlinelibrary.wiley.com/doi/full/10.1111/j.1600-0587.2013.07872.x
 
 # Create blocks with the occurrence and background data
 block <- get.block(occs = occurrences,
@@ -156,7 +160,7 @@ user.grp <- list(occs.grp = block$occs.grp,
 tune.args <- list(fc = c("L", "LQ", "H", "LQH"), rm = 1:3)
 
 # Specify we are using both climate and elevation as predictors
-envs <- c(future_clim, dem)
+envs <- c(clim, dem)
 
 # We will use the partition method because it creates a more independent model
 # to be tested against the others. There are other options for modifications:
@@ -191,9 +195,6 @@ results <- ENMevaluate(occs = occurrences,
 
 # Look at table with evaluation metrics for each set of tuning parameters
 eval_table <- results@results
-
-# Save this table
-write.csv(eval_table, "output/enmeval_futurepred_results.csv")
 
 # Filter for optimal model
 optimal <- results@results %>%
@@ -247,7 +248,7 @@ range <- pred_vals > threshold
 # Environmental suitability plots
 pred_spdf <- as(pred_vals, "SpatialPixelsDataFrame")
 
-pred_df <- as.data.frame(pred_spdf)
+dist_df <- as.data.frame(pred_spdf)
 
 # Range plots
 raster_spdf <- as(range, "SpatialPixelsDataFrame")
@@ -259,20 +260,20 @@ range_df$layer <- as.factor(range_df$layer)
 
 
 
-# ----- PLOT DISTRIBUTION MAPS -----
+# ----- PLOT MAPS -----
 
 # Collect data for map borderlines
 wrld <- ggplot2::map_data("world")
 
 # Set boundaries where map should be focused
-xmax <- max(pred_df$x)
-xmin <- min(pred_df$x)
-ymax <- max(pred_df$y)
-ymin <- min(pred_df$y)
+xmax <- max(dist_df$x)
+xmin <- min(dist_df$x)
+ymax <- max(dist_df$y)
+ymin <- min(dist_df$y)
 
-# Environmental suitability prediction map
+# ENVIRONMENTAL SUITABILITY MAP --
 ggplot() +
-  geom_raster(data = future_pred_df, 
+  geom_raster(data = dist_df, 
               aes(x = x, y = y, fill = layer))  + 
   scale_fill_gradientn(colours=viridis::viridis(99)) +
   coord_fixed(xlim = c(xmin, xmax), 
@@ -280,7 +281,9 @@ ggplot() +
               expand = F) +
   scale_size_area() +
   borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
+  geom_point(data = data,
+             aes(x = longitude, y = latitude)) +
+  labs(title = bquote(bold("Current Climate Predictions")),
        x = "Longitude",
        y = "Latitude",
        fill = "Environmental \nSuitability") + 
@@ -291,30 +294,30 @@ ggplot() +
         panel.background = element_rect(fill = "grey95"))
 
 # Save
-ggsave(file = "output/enmeval_future_distribution.png",
+ggsave(file = "output/ADS_versions/current_distribution.png",
        width = 25,
        height = 15,
        units = "cm")
 
-# Range prediction map
+# RANGE MAP --
 ggplot() +
-  geom_raster(data = future_range_df, 
+  geom_raster(data = range_df, 
               aes(x = x, y = y, fill = layer)) +
   scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin2, xmax2), 
-              ylim = c(ymin2, ymax2), 
+  coord_fixed(xlim = c(xmin, xmax), 
+              ylim = c(ymin, ymax), 
               expand = F) +
   scale_size_area() +
   borders("state") +
-  labs(title = bquote(bold("50 Years into the Future")),
+  labs(title = bquote(bold("Current Climate Predictions")),
        x = "Longitude",
        y = "Latitude") + 
-  theme(legend.position = "none")
+  theme(axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        legend.position = "none")
 
 # Save
-ggsave(file = "output/enmeval_test_future_range.png",
+ggsave(file = "output/ADS_versions/current_range.png",
        width = 25,
        height = 15,
        units = "cm")
-
-
