@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 5 December 2023
-# Last modified: 4 January
+# Last modified: 8 February 2024
 
 
 
@@ -10,14 +10,15 @@
 
 # 1) Retrieves data from GBIF for the following species:
 
-# (Replace with your own species below)
+     # (Replace with your own species below)
 
-# Common name (Scientific name) - Taxon key
-# Desert / Digger Bee (Centris pallida) - 1342915
+     # Example: Common name (Scientific name) - Taxon key
+     # Desert / Digger Bee (Centris pallida) - 1342915
 
 # 2) Cleans data
 
-# 3) Saves cleaned data as: data/ADS_versions/cleaned_species.csv
+# 3) Saves cleaned data as: 
+     # data/ADS_versions/cleaned_species.csv
 
 
 
