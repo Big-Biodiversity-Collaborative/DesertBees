@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 21 December 2023
+# Last modified: 14 February 2024
 
 
 
@@ -29,12 +29,15 @@
 
 # ----- LOAD LIBRARIES -----
 
+# For shapefiles
+library(sf)
+library(rnaturalearth)
+
 # For converting to and working with spatial data
 library(sp)
 library(raster)
 library(dismo)
 library(terra)
-library(raptr)
 library(dplyr)
 
 # For maxent
@@ -62,6 +65,11 @@ dem <- rast(paste0("data/DEM", "/northamerica_elevation_cec_2023.tif"))
 clim <- terra::rast(list.files(path = "data/WORLDCLIM",
                                        pattern = ".tif$",
                                        full.names = TRUE))
+
+# Change projection of dem to that of bioclim variables (may take a minute).
+# Needs to be done before function modifications, but we are also doing it here
+# so it doesn't have to run every pass (since it does take so long).
+dem <- terra::project(dem, crs(clim))
   
 # Species to loop through
 spp_list <- unique(data$species)
@@ -81,7 +89,7 @@ for (i in 1:4) {
   sdm(species = species, clim = clim, current_or_future_sdm = "current")
   
   # Which species did we finish
-  print(paste("Finished Maxent for:", spp_list[i]))
+  print(paste("Finished CURRENT Maxent for:", spp_list[i]))
   print("-------------------------")
   
 }
@@ -110,7 +118,7 @@ for (i in 1:4) {
   sdm(species = species, clim = clim, current_or_future_sdm = "future")
   
   # Which species did we finish
-  print(paste("Finished Maxent for:", spp_list[i]))
+  print(paste("Finished FUTURE Maxent for:", spp_list[i]))
   print("-------------------------")
   
 }  
