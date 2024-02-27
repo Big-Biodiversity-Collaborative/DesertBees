@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 14 February 2024
+# Last modified: 27 February 2024
 
 
 
@@ -51,10 +51,10 @@ source("functions.R")
 # ----- LOAD DATA -----
 
 # Species occurence data
-data <- read.csv("data/GBIF/cleaned_species.csv")
+data <- read.csv("data/GBIF/cleaned_species_with_elevation.csv")
 
 # Elevation data
-dem <- rast(paste0("data/DEM", "/northamerica_elevation_cec_2023.tif"))
+dem_d <- rast(paste0("data/DEM", "/northamerica_elevation_cec_2023.tif"))
 
 
 
@@ -69,7 +69,7 @@ clim <- terra::rast(list.files(path = "data/WORLDCLIM",
 # Change projection of dem to that of bioclim variables (may take a minute).
 # Needs to be done before function modifications, but we are also doing it here
 # so it doesn't have to run every pass (since it does take so long).
-dem <- terra::project(dem, crs(clim))
+dem <- terra::project(dem_d, crs(clim))
   
 # Species to loop through
 spp_list <- unique(data$species)
@@ -77,9 +77,10 @@ spp_list <- unique(data$species)
 # Function
 for (i in 1:4) {
   
-  # Get species to work with
+  # Get species to work with + omit occurrences with elevation < 0m
   species <- data %>%
     filter(species == spp_list[i]) %>%
+    subset(elevation > 0) %>%
     dplyr::select(longitude, latitude)
   
   # Which species are we on
@@ -103,12 +104,16 @@ clim <- terra::rast(list.files(path = "data/CMIP6",
                                pattern = ".tif$",
                                full.names = TRUE))
 
+# Change projection of dem to that of bioclim variables (may take a minute).
+dem <- terra::project(dem_d, crs(clim))
+
 # Function
 for (i in 1:4) {
   
-  # Get species to work with
+  # Get species to work with + omit occurrences with elevation < 0m
   species <- data %>%
     filter(species == spp_list[i]) %>%
+    subset(elevation > 0) %>%
     dplyr::select(longitude, latitude)
   
   # Which species are we on
