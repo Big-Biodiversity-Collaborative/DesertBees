@@ -83,7 +83,7 @@ write.csv(raw_data, "data/GBIF/raw_species.csv", row.names = FALSE)
 # If starting here, read in the raw data (downloaded on 7 December 2023)
 raw_data <- read.csv("data/GBIF/raw_species.csv")
 
-# Number of observations:
+# Number of observations (nrow(filter(data, speciesKey == ___))):
   # C. pallida = 1089
   # O. tesota = 5039
   # P. florida = 4535
@@ -102,17 +102,20 @@ data <- raw_data %>%
   filter(hasGeospatialIssues == FALSE) %>% # Remove those with issues
   distinct(decimalLongitude, # Remove duplicates
            decimalLatitude, 
+           year,
+           month,
+           day,
            speciesKey, 
            datasetKey, 
            .keep_all = TRUE)
 
-# 11998 observations, 212 variables
+# 12138 observations, 212 variables
 
 # Number of observations:
-  # C. pallida = 295
-  # O. tesota = 4186
-  # P. florida = 3542
-  # P. microphylla = 3975
+  # C. pallida = 315
+  # O. tesota = 4219
+  # P. florida = 3586
+  # P. microphylla = 4018
 
 # Reduce columns to what is / might be necessary for analyses / figures
 data <- data %>%
@@ -342,7 +345,7 @@ for (i in 1:4) {
 }
 
 # To check filtering:
-  # 1) Set aside last three comment lines in loop and run
+  # 1) Omit last three comment lines in loop and run
   # 2) Plot mapview(sp_coords) + mapview(sp_poly)
 
 
@@ -353,13 +356,13 @@ for (i in 1:4) {
 # Filter full data to the new filtered species coordinates
 cleaned_data <- semi_join(data, cleaned_coords)
 
-# 11962 observations, 11 variables
+# 12102 observations, 11 variables
 
 # Number of observations:
-  # C. pallida = 289
-  # O. tesota = 4180
-  # P. florida = 3526
-  # P. microphylla = 3967
+  # C. pallida = 309
+  # O. tesota = 4213
+  # P. florida = 3570
+  # P. microphylla = 4010
 
 # Save as csv
 write.csv(cleaned_data, "data/GBIF/cleaned_species.csv", row.names = FALSE)

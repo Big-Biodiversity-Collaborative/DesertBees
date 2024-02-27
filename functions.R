@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 14 February 2024
+# Last modified: 27 February 2024
 
 
 
@@ -11,22 +11,6 @@
 # Function for running Maxent (ENMeval)
   # Current SDM
   # Future SDM
-
-# Performs the following, among other things:
-  # Converts observations to spatial points
-  # Allows for predictions that are 200 meters outside of expected range
-  # Crops climate data to extent
-  # Crops elevation data to extent
-  # Matches CRS for predictors
-  # Removes values / locations outside expected elevation of bee and host plants
-  # Thins occurrence points (one per raster cell)
-  # Generates background points
-  # Prepares MaxEnt settings
-  # (1st run determines which predictor variables contribute most to model)
-  # Removes predictor variables with little to no effect on model
-  # Runs MaxEnt
-  # Evaluates "best" model
-  # Saves results for plotting distribution and range maps
 
 
 
@@ -41,13 +25,13 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   # -- CONVERT OBSERVATIONS TO SPATIAL OBJECT --
   
-  # Note start of process
-  print("Preparing occurrence data.")
-  
   # Convert species observations to spatial points
   # CRS: Coordinate Reference System
   spp <- SpatialPoints(species,
                        proj4string = CRS("+proj=longlat"))
+  
+  # Note that process is done
+  print("Occurrence data has been converted to spatial points.")
   
   # Determine extent of species presence data in order to crop the climate and
     # elevation data to appropriate values
@@ -76,13 +60,21 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   # If we check this using the same method as above, it will look the same but
     # if you zoom in (a lot) to the nodes the buffer is visible
   
+  # Run writeVector() once without the comment, but after this function is used once re-comment
+    
+    # Why?
+    # Error occurs with shapefile saving, so to run again without error either
+    # 1) manually go into each species' output/SHAPEFILES folder and empty the 
+         # all contents (.shp + others) BEFORE re-using this function, or
+    # 2) as said above, just make sure the writeVector is commented out
+  
   # Save buffer as shapefile
-  writeVector(geo_extent,
-              filename = paste("data/SHAPEFILES/", spp_list[i],"/ext_buffer.shp",
-                               sep = ""))
+  # writeVector(geo_extent,
+  #             filename = paste("data/SHAPEFILES/", spp_list[i],"/ext_buffer.shp",
+  #                              sep = ""))
   
   # Note that process is done
-  print("Occurrence data has been converted to spatial points.")
+  print("Shapefile of prediction boundaries generated.")
   
   
   
@@ -91,9 +83,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   # We are starting with elevation because we are turning extreme elevations to
     # NA values. This will create some "holes" which will need to be applied
     # to the climate data as well.
-  
-  # Note start of process
-  print("Preparing predictors.")
   
   # Crop and mask elevation to the buffer boundaries
   dem_mod <- dem %>%
@@ -105,7 +94,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   # Remove extreme elevation values
   # (Accounts for both bee and plant ranges)
   dem_mod[dem_mod < 0] <- NA
-  dem_mod[dem_mod > 1250] <- NA
   
   # Check: plot(dem_mod)
   
@@ -138,9 +126,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   # -- PREPARE OCCURRENCE POINTS --
   
-  # Note start of process
-  print("Thinning occurrence data.")
-  
   # Thin occurrence records so there's only one per raster cell
   occurrences <- dismo::gridSample(spp, clim_mod[[1]], n = 1)
   
@@ -157,9 +142,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   
   #  -- PREPARE BACKGROUND POINTS --
-  
-  # Note start of process
-  print("Preparing background data.")
   
   # Generate random points
   background <- terra::spatSample(x = clim_mod[[1]],  
@@ -178,9 +160,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   
   # -- PARAMETER SETTING AND K-FOLD BLOCKS --
-  
-  # Note start of process
-  print("Preparing parameters for Maxent.")
   
   # Create blocks with the occurrence and background data
   block <- get.block(occs = occurrences,
@@ -208,36 +187,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   # Specify we are using both climate and elevation as predictors
   envs <- c(clim_mod, dem_mod)
-  
-  # [AFTER INITIAL CHECKS] -- OMITTED
-  
-  # Comment if initial checks (later in code) have not been run first
-    # Code below will eliminate insignificant predictor variables
-    # For keeping variables that contribute the most to the model
-    # (They have a marginal response curve with the predicted probability of presence)
-  
-  # Open file with significant predictor variables
-  #betas <- read.csv(paste("output/", spp_list[i], "/", current_or_future_sdm, "_beta_values.csv", sep = ""))
-  
-  # Get names for complete set of variables
-  #vars <- names(envs)
-  
-  # Get names of significant variables
-  #vars_to_keep <- betas$X
-  
-  # Get which variables need to be removed
-  #vars_to_remove <- setdiff(vars, vars_to_keep)
-  
-  # Convert to Raster to easily remove variables
-  #envs <- raster::stack(envs)
-  
-  # Drop layers containing insignificant variables
-  #envs <- dropLayer(envs, vars_to_remove)
-  
-  # Convert back to SpatRaster
-  #envs <- terra::rast(envs)
-  
-  # [END] --
   
   # We will use the partition method because it creates a more independent model
   # to be tested against the others. There are other options for modifications:
@@ -277,9 +226,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   # -- FIND BEST MODEL --
   
-  # Note start of process
-  print("Finding the optimal model.")
-  
   # Look at table with evaluation metrics for each set of tuning parameters
   eval_table <- results@results
   
@@ -292,20 +238,17 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   # Extract the optimal model
   best <- results@models[[optimal$tune.args]]
   
-  # [START INITIAL CHECKS] -- OMITTED
+  # Find non-zero coefficients 
+  betas <- as.data.frame(best$betas)
   
-  # 1st pass: Un-comment (code below) to acquire significant predictor variables
-    # Will save significant betas as .csv's in respective species' folder
-    # That .csv is used in the 2nd pass to remove insignificant predictor variables
-    # The 2nd pass uses only the significant predictor variables in the model
+  names(betas)[names(betas) == "best$betas"] <- "predictor_value"
   
-  # Find non-zero coefficients and save file
+  betas <- betas %>% 
+    arrange(desc(predictor_value))
   
-  #betas <- as.data.frame(best$betas)
-  #write.csv(betas, 
-  #          paste("output/", spp_list[i], "/", current_or_future_sdm, "_beta_values.csv", sep = ""))
-  
-  # [END INITIAL CHECKS] --
+  # And save file
+  write.csv(betas, 
+            paste(paste("output/", spp_list[i], "/", current_or_future_sdm, "_beta_values.csv", sep = "")))
   
   # Note that process is done
   print("Optimal model extracted.")
@@ -313,9 +256,6 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   
   
   # -- USING OPTIMAL MODEL FOR PREDICTIONS --
-  
-  # Note start of process
-  print("Preparing prediction data.")
   
   # Convert predictors from SpatRaster to RasterStack
   # (enm.maxnet only takes raster objects at the moment)

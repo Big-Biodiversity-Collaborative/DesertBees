@@ -3,9 +3,4 @@
 .RData
 .Ruserdata
 .Renviron
-0095579-230224095556074.zip
-0103311-230224095556074.zip
-data/gbif_rawdata_full.csv
-data/cmip5/
-data/wc2-5/
-data/dem_1km/
+data/DEM
