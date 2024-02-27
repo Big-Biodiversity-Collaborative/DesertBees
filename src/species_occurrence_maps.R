@@ -24,6 +24,7 @@ library(ggplot2)
 library(leaflet) 
 library(mapview)
 library(png)
+library(grid)
 library(cowplot)
 
 
@@ -32,17 +33,17 @@ library(cowplot)
 # ----- LOAD DATA -----
 
 # Read data set
-data <- read.csv("data/GBIF/cleaned_species.csv")
+data <- read.csv("data/GBIF/cleaned_species_with_elevation.csv")
 
 # Separate species for individual plots
 cp <- data %>%
-  filter(speciesKey == 1342915) # 289 observations
+  filter(speciesKey == 1342915)
 ot <- data %>%
-  filter(speciesKey == 2974564) # 4180 observations
+  filter(speciesKey == 2974564)
 pf <- data %>%
-  filter(speciesKey == 5359949) # 3526 observations
+  filter(speciesKey == 5359949)
 pm <- data %>%
-  filter(speciesKey == 5359945) # 3967 observations
+  filter(speciesKey == 5359945)
 
 
 
@@ -50,12 +51,11 @@ pm <- data %>%
 # ----- GENERATE MAPS -----
 
 # C. PALLIDA
-cp_plot <- 
-  leaflet(cp,
-          options = leafletOptions(zoomControl = FALSE,
-                                   attributionControl = FALSE)) %>%
+cp_plot <- leaflet(cp,
+                   options = leafletOptions(zoomControl = FALSE,
+                                            attributionControl = FALSE)) %>%
   addProviderTiles("Esri.WorldTopoMap") %>%
-  addCircleMarkers(color = "#EE7600",
+  addCircleMarkers(color = "#CD1076",
                    radius = 3,
                    fillOpacity = 0.8,
                    stroke = FALSE)
@@ -103,7 +103,7 @@ pm_plot <- leaflet(pm,
                    options = leafletOptions(zoomControl = FALSE,
                                             attributionControl = FALSE)) %>%
   addProviderTiles("Esri.WorldTopoMap") %>%
-  addCircleMarkers(color = "#CD1076",
+  addCircleMarkers(color = "#EE7600",
                    radius = 3,
                    fillOpacity = 0.8,
                    stroke = FALSE)
