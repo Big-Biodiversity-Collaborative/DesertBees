@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 27 February 2024
+# Last modified: 22 March 2024
 
 
 
@@ -11,6 +11,8 @@
 # Function for running Maxent (ENMeval)
   # Current SDM
   # Future SDM
+
+# Function for custom ggplot plots
 
 
 
@@ -229,6 +231,10 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
   # Look at table with evaluation metrics for each set of tuning parameters
   eval_table <- results@results
   
+  # And save file
+  write.csv(eval_table, 
+            paste(paste("output/", spp_list[i], "/", current_or_future_sdm, "_parameter_results.csv", sep = "")))
+  
   # Filter for optimal model
   optimal <- results@results %>%
     filter(cbi.val.avg > 0) %>%
@@ -327,6 +333,38 @@ sdm <- function(species, clim_mod, current_or_future_sdm) {
 
 
 
+
+# ----- MAPPING -----
+
+custom_ggplot <- function(sdm_data, sdm_type) {
+  
+  # Set boundaries where map should be focused
+  xmax <- max(sdm_data$x) + 1
+  xmin <- min(sdm_data$x) - 1
+  ymax <- max(sdm_data$y) + 1
+  ymin <- min(sdm_data$y) - 1
+  
+  # Plot map
+  ggplot() +
+    geom_raster(data = sdm_data, 
+                aes(x = x, y = y, fill = layer))  + 
+    scale_fill_gradientn(colours = viridis::plasma(99)) +
+    coord_fixed(xlim = c(xmin, xmax), 
+                ylim = c(ymin, ymax), 
+                expand = F) +
+    scale_size_area() +
+    borders("world") +
+    borders("state") +
+    labs(title = paste(sdm_type, "Climate", sep = " "),
+         x = "Longitude",
+         y = "Latitude",
+         fill = "Environmental \nSuitability") + 
+    theme(axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)),
+          legend.box.background = element_rect(color = NA),
+          legend.position = "bottom",
+          panel.background = element_rect(fill = "grey95"))
+}
 
 
 
