@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 22 March 2024
-# Last modified: 25 March 2024
+# Last modified: 15 April 2024
 
 
 
@@ -33,35 +33,41 @@ wrld <- ggplot2::map_data("world")
 # ----- MAKE STRIPS -----
 
 # Strips are structured as:
-  # Current predictions
-  # Predictions under SSP 245
-  # Predictions under SSP 370
-  # Predictions under SSP 585
+  # Current predictions (2000-2021)
+  # Predictions under SSP 370 for 20-year increments
 
 # -- Centris pallida --
 
 # Current
-data <- read.csv("output/centris_pallida/current_distribution.csv")
+data <- read.csv("output/centris_pallida/worldclim_predicted_distribution.csv")
 plot_a <- custom_ggplot(sdm_data = data, sdm_type = "2000-2021")
 
-# 2041
-data <- read.csv("output/centris_pallida/future370_distribution.csv")
-plot_b <- custom_ggplot(sdm_data = data, sdm_type = "2041-2070")
+# 2021
+data <- read.csv("output/centris_pallida/ssp370_2021_predicted_distribution.csv")
+plot_b <- custom_ggplot(sdm_data = data, sdm_type = "2021-2040")
 
-# 2071
-data <- read.csv("output/centris_pallida/future370_2071_distribution.csv")
-plot_c <- custom_ggplot(sdm_data = data, sdm_type = "2071-2100")
+# 2041
+data <- read.csv("output/centris_pallida/ssp370_2041_predicted_distribution.csv")
+plot_c <- custom_ggplot(sdm_data = data, sdm_type = "2041-2060")
+
+# 2061
+data <- read.csv("output/centris_pallida/ssp370_2061_predicted_distribution.csv")
+plot_d <- custom_ggplot(sdm_data = data, sdm_type = "2061-2080")
+
+# 2081
+data <- read.csv("output/centris_pallida/ssp370_2081_predicted_distribution.csv")
+plot_e <- custom_ggplot(sdm_data = data, sdm_type = "2081-2100")
 
 # Strip
-cp_strip <- plot_grid(plot_a, plot_b, plot_c,
+cp_strip <- plot_grid(plot_a, plot_b, plot_c, plot_d, plot_e,
                       labels = "auto",
                       label_size = 20,
-                      ncol = 3)
+                      ncol = 5)
 
 # Save
 ggsave2(file = "output/centris_pallida/distribution_strip.png",
        plot = last_plot(),
-       width = 35,
+       width = 40,
        height = 20,
        units = "cm")
 
