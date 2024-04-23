@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 13 April 2024
+# Last modified: 16 April 2024
 
 
 
@@ -15,6 +15,8 @@
   # Blue Palo Verde (Parkinsonia florida) - 5359949
   # Foothill Palo Verde (Parkinsonia microphylla) - 5359945
   # Desert Ironwood (Olneya tesota) - 2974564
+
+# Generates predictions for current, 2021-2040, and 2041-2060 time periods.
 
 # (SDM = Species Distribution Model)
 
@@ -40,13 +42,13 @@ library(dplyr)
 library(ENMeval)
 
 # Function
-source("functions2.R")
+source("functions.R")
 
 
 
 # ----- LOAD DATA -----
 
-# Species occurence data
+# Species occurrence data
 data <- read.csv("data/gbif/cleaned_species_with_elevation.csv")
 
 # Elevation data
@@ -73,11 +75,7 @@ spp_list <- unique(data$species)
 # Before running and using sdm():
   # If new shapefiles are needed, 
   # First delete shapefiles in output/shapefiles/ 
-  # and uncomment writeVector() in functions.R.
   # Then the folllowing loop can be run.
-
-# After all species have shapefile output, writeVector() can be re-commented
-  # if running code more than once without changes to prediction boundaries.
 
 # Function
 for (i in 1:4) {

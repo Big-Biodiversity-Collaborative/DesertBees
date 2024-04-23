@@ -53,7 +53,7 @@ monthly_vars <- c("tmin" = "Tmin",
                   "prec" = "PPT")
 
 # Used for file downloads, based on URL names at AWS
-per_starts <- c("2021", "2041", "2061", "2081")
+per_starts <- c("2021", "2041")
 
 # SSP of interest (2 = 4.5, 3 = 7.0, 5 = 8.5)
 ssps <- "ssp370"
@@ -357,7 +357,7 @@ for (ssp in ssps) {
 
 # ------------------------------------------------------------------------------
 
-# MC NOTE TO SELF: Jeff hasn't done this section for a year, so we can omit
+# MC NOTE TO SELF: Jeff hasn't done this section for a year, so we can omit... ?
 
 # Do some QA/QC for each of the forecast data sets; still relies on raster
 # package
@@ -374,12 +374,15 @@ for (ssp in ssps) {
 # Each element should be a list with two objects:
 #  + delta_raster_list : rasters of delta values
 #  + biovar_qc         : data frame of mean deltas for each biovar
+
 qa_result_list <- list()
 
 timeout_default <- getOption("timeout")
-options(timeout = 15 * 60) # Set to 15 minutes, files are large (1GB)
 
-base_url <- "https://s3-us-west-2.amazonaws.com/www.cacpd.org/CMIP6/ensembles/"
+# Set to 15 minutes, files are large (1GB)
+options(timeout = 15 * 60) 
+
+base_url <- "https://s3-us-west-2.amazonaws.com/www.cacpd.org/CMIP6v73/ensembles/"
 
 for (ssp in ssps) {
   
