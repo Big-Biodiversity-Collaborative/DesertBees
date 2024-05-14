@@ -56,7 +56,7 @@ monthly_vars <- c("tmin" = "Tmin",
 per_starts <- c("2021", "2041")
 
 # SSP of interest (2 = 4.5, 3 = 7.0, 5 = 8.5)
-ssps <- "ssp370"
+ssps <- c("ssp245", "ssp370")
 
 # For writing raster files to disk
 final_raster_format <- ".tif"
