@@ -16,7 +16,7 @@
   # Foothill Palo Verde (Parkinsonia microphylla) - 5359945
   # Desert Ironwood (Olneya tesota) - 2974564
 
-# Generates predictions for current, 2021-2040, and 2041-2060 time periods.
+# Generates predictions for current (2000-2021) and 2021-2040 time periods.
 
 # (SDM = Species Distribution Model)
 

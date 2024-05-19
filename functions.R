@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 10 April 2024
-# Last modified: 20 April 2024
+# Last modified: 19 May 2024
 
 
 
@@ -222,6 +222,22 @@ sdm <- function(species_data) {
   # Specify we are using both climate and elevation as predictors
   envs <- c(clim_mod, dem_mod)
   
+  # Omit variables that are highly correlated to each other
+    # https://esajournals.onlinelibrary.wiley.com/doi/full/10.1890/02-3114
+    # We will remove those that are functions of the others.
+  
+  # Names for complete set of variables
+  vars_to_remove <- c("bio3", "bio7")
+  
+  # Convert to Raster to easily remove variables
+  envs <- raster::stack(envs)
+  
+  # Drop layers containing unwanted variables
+  envs <- dropLayer(envs, vars_to_remove)
+  
+  # Convert back to SpatRaster
+  envs <- terra::rast(envs)
+  
   # We will use the partition method because it creates a more independent model
   # to be tested against the others. There are other options for modifications:
   # https://rdocumentation.org/packages/ENMeval/versions/2.0.4/topics/ENMevaluate
@@ -301,8 +317,7 @@ sdm <- function(species_data) {
   
   # List of climate scenarios to make predictions for (folder path after data/)
   clim_ids <- c("worldclim",
-                "ensemble/ssp370/2021",
-                "ensemble/ssp370/2041")
+                "ensemble/ssp245/2021")
   
   # Loop through each climate period and generate predictions for each
   for (clim_id in clim_ids) {
@@ -320,7 +335,7 @@ sdm <- function(species_data) {
                                    full.names = TRUE))
   
     # Note start of prediction for this climate scenario
-    message(paste0(Sys.time(), " | Prediction started for ", clim_file, "."))
+    message(paste0(Sys.time(), " | Prediction started for ", clim_id, "."))
     
     
     
@@ -398,18 +413,53 @@ sdm <- function(species_data) {
     
     # --- GENERATE PREDICTIONS ---
     
+    # (A) PREDICTED DISTRIBUTION ---
+    
     # Generate raster with predicted suitability values
     pred_vals <- enm.maxnet@predict(best_model, 
                                     envs_r,
                                     list(pred.type = "cloglog",
                                          doClamp = FALSE))
     
+    # Make a copy of the raster for visualizations
+    pred_vals_plotting <- pred_vals
+    
+    # Set any values below 0.5 to missing so audience is just aware of the "more suitable" areas
+    pred_vals_plotting[pred_vals_plotting < 0.50] <- NA
+    
     # Note that process is done
     message(paste0(Sys.time(), " | Predicted distribution for ", clim_id, " is done."))
     
+    # (B) PREDICTED RANGE ---
+    
+    # Extract predicted suitability values for occurrence locations
+    pred_occ <- raster::extract(pred_vals, occurrences)
+    
+    # Extract predicted suitability values for background locations
+    pred_bg <- raster::extract(pred_vals, background)
+    
+    # Evaluate models - gives ModelEvaluation object
+    eval <- dismo::evaluate(pred_occ, pred_bg)
+    
+    # Use a max(spec + sens) threshold to convert probabilities into binary values 
+    # (1 = part of species' predicted range; 0 = outside of range) - gives a Value
+    threshold <- dismo::threshold(eval, stat = "spec_sens")
+    
+    # For predicting range, find predicted values greater than the threshold
+    pred_range <- pred_vals > threshold
+    
+    message(paste0(Sys.time(), " | Predicted range for ", clim_id, " is done."))
     
     
     # --- SAVE PREDICTIONS TO OUTPUT FOLDER ---
+    
+    # (A) PREDICTED DISTRIBUTION ---
+    
+    # (A.1) ORIGINAL VALUES ---
+    
+    # As raster
+    writeRaster(pred_vals,
+                paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.tif"))
     
     # Convert to SpatialPixelsDataFrame
     pred_spdf <- as(pred_vals, "SpatialPixelsDataFrame")
@@ -417,13 +467,49 @@ sdm <- function(species_data) {
     # Convert to data frame
     pred_df <- as.data.frame(pred_spdf)
     
-    print("Saving .csv file for predicted distribution.")
-    
+    # Save file
     write.csv(pred_df, 
-              paste0("output/", file_id, "/", gsub("ensemble/ssp370/", "ssp370_", clim_id), "_predicted_distribution.csv"),
+              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.csv"),
               row.names = FALSE)
     
-    message(paste0(Sys.time(), " | Predictions saved for ", clim_id, "."))
+    # (A.2) ONLY >50% CHANCE SUITABLE VALUES ---
+    
+    # As raster
+    writeRaster(pred_vals_plotting,
+                paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.tif"))
+    
+    # Convert to SpatialPixelsDataFrame
+    pred_spdf <- as(pred_vals_plotting, "SpatialPixelsDataFrame")
+    
+    # Convert to data frame
+    pred_df <- as.data.frame(pred_spdf)
+    
+    # Save file
+    write.csv(pred_df, 
+              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.csv"),
+              row.names = FALSE)
+    
+    # Note that process is done
+    message(paste0(Sys.time(), " | Predicted distribution saved for ", clim_id, "."))
+    
+    # (B) PREDICTED RANGE ---
+    
+    # Convert to SpatialPixelsDataFrame
+    range_spdf <- as(pred_range, "SpatialPixelsDataFrame")
+    
+    # Convert to data frame
+    range_df <- as.data.frame(range_spdf)
+    
+    # Factor layers
+    range_df$layer <- as.factor(range_df$layer)
+    
+    # Save file
+    write.csv(range_df, 
+              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_range.csv"),
+              row.names = FALSE)
+    
+    # Note that process is done
+    message(paste0(Sys.time(), " | Predicted range saved for ", clim_id, "."))
     
   } 
   
@@ -438,39 +524,73 @@ sdm <- function(species_data) {
 
 # ----- CUSTOM PLOTTING SETTINGS FOR GGPLOT -----
 
-# For current panel (has occurrence points)
-custom_ggplot1 <- function(sdm_data, sdm_type) {
-  
-  # Set boundaries where map should be focused
-  xmax <- max(sdm_data$x) + 1
-  xmin <- min(sdm_data$x) - 1
-  ymax <- max(sdm_data$y) + 1
-  ymin <- min(sdm_data$y) - 1
-  
+# For current panels
+custom_ggplot1 <- function(sdm_data, xmin, xmax, ymin, ymax) {
+ 
   # Plot map
   ggplot() +
     geom_raster(data = sdm_data, 
-                aes(x = x, y = y, fill = layer))  + 
-    scale_fill_gradientn(colours = viridis::plasma(99)) +
+                aes(x = x, y = y, fill = ">50% Predicted \nEnvironmental \nSuitability"))  + 
+    scale_fill_manual(name = "",
+                       breaks = c(">50% Predicted \nEnvironmental \nSuitability"),
+                       values = c(">50% Predicted \nEnvironmental \nSuitability" = "cornflowerblue")) +
     coord_fixed(xlim = c(xmin, xmax), 
                 ylim = c(ymin, ymax), 
                 expand = F) +
     scale_size_area() +
     borders("state") +
     borders("world", colour = "black", fill = NA) +
-    labs(title = paste(sdm_type, "Climate", sep = " "),
-         x = "Longitude",
+    labs(x = "Longitude",
          y = "Latitude",
-         fill = "Environmental \nSuitability") + 
+         fill = "") + 
     theme(axis.title.x = element_text(margin = margin(t = 10)),
           axis.title.y = element_text(margin = margin(r = 10)),
+          panel.background = element_rect(fill = "grey99"),
+          panel.grid.major = element_line(color = "grey92"),
+          panel.grid.minor = element_line(color = "grey92"),
           legend.box.background = element_rect(color = NA),
-          legend.position = "bottom",
-          panel.background = element_rect(fill = "grey95"))
+          plot.margin = margin(t = 10,  
+                               r = 20, 
+                               b = 10,  
+                               l = 20))
+  
 }
 
 # For future panels
-custom_ggplot2 <- function(sdm_data, sdm_type) {
+custom_ggplot2 <- function(sdm_data, xmin, xmax, ymin, ymax) {
+  
+  # Plot map
+  ggplot() +
+    geom_raster(data = sdm_data, 
+                aes(x = x, y = y, fill = ">50% Predicted \nEnvironmental \nSuitability"))  + 
+    scale_fill_manual(name = "",
+                      breaks = c(">50% Predicted \nEnvironmental \nSuitability"),
+                      values = c(">50% Predicted \nEnvironmental \nSuitability" = "violetred")) +
+    coord_fixed(xlim = c(xmin, xmax), 
+                ylim = c(ymin, ymax), 
+                expand = F) +
+    scale_size_area() +
+    borders("state") +
+    borders("world", colour = "black", fill = NA) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "") + 
+    theme(axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)),
+          panel.background = element_rect(fill = "grey99"),
+          panel.grid.major = element_line(color = "grey92"),
+          panel.grid.minor = element_line(color = "grey92"),
+          legend.box.background = element_rect(color = NA),
+          plot.margin = margin(t = 10,  
+                               r = 20, 
+                               b = 10,  
+                               l = 20))
+  
+}
+
+
+# For gradient plots
+custom_ggplot3 <- function(sdm_data, sdm_type) {
   
   # Set boundaries where map should be focused
   xmax <- max(sdm_data$x) + 1
@@ -498,7 +618,105 @@ custom_ggplot2 <- function(sdm_data, sdm_type) {
           legend.box.background = element_rect(color = NA),
           legend.position = "bottom",
           panel.background = element_rect(fill = "grey95"))
+  
 }
 
+# For area intersect panels 
+
+# Current intersect
+custom_ggplot4 <- function(sdm_data, xmin, xmax, ymin, ymax) {
+  
+  # Plot map
+  ggplot() +
+    geom_raster(data = sdm_data, 
+                aes(x = x, y = y, fill = "Current predicted \narea intersected \nby all species"))  + 
+    scale_fill_manual(name = "",
+                      breaks = c("Current predicted \narea intersected \nby all species"),
+                      values = c("Current predicted \narea intersected \nby all species" = "cornflowerblue")) +
+    coord_fixed(xlim = c(xmin, xmax), 
+                ylim = c(ymin, ymax), 
+                expand = F) +
+    scale_size_area() +
+    borders("state") +
+    borders("world", colour = "black", fill = NA) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "") + 
+    theme(axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)),
+          panel.background = element_rect(fill = "grey99"),
+          panel.grid.major = element_line(color = "grey92"),
+          panel.grid.minor = element_line(color = "grey92"),
+          legend.box.background = element_rect(color = NA),
+          plot.margin = margin(t = 10,  
+                               r = 20, 
+                               b = 10,  
+                               l = 20))
+  
+}
+
+# Future intersect
+custom_ggplot5 <- function(sdm_data, xmin, xmax, ymin, ymax) {
+  
+  # Plot map
+  ggplot() +
+    geom_raster(data = sdm_data, 
+                aes(x = x, y = y, fill = "Future predicted \narea intersected \nby all species"))  + 
+    scale_fill_manual(name = "",
+                      breaks = c("Future predicted \narea intersected \nby all species"),
+                      values = c("Future predicted \narea intersected \nby all species" = "violetred")) +
+    coord_fixed(xlim = c(xmin, xmax), 
+                ylim = c(ymin, ymax), 
+                expand = F) +
+    scale_size_area() +
+    borders("state") +
+    borders("world", colour = "black", fill = NA) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "") + 
+    theme(axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)),
+          panel.background = element_rect(fill = "grey99"),
+          panel.grid.major = element_line(color = "grey92"),
+          panel.grid.minor = element_line(color = "grey92"),
+          legend.box.background = element_rect(color = NA),
+          plot.margin = margin(t = 10,  
+                               r = 20, 
+                               b = 10,  
+                               l = 20))
+  
+}
+
+# Gained area
+custom_ggplot6 <- function(sdm_data, xmin, xmax, ymin, ymax) {
+  
+  # Plot map
+  ggplot() +
+    geom_raster(data = sdm_data, 
+                aes(x = x, y = y, fill = "Gained area"))  + 
+    scale_fill_manual(name = "",
+                      breaks = c("Gained area"),
+                      values = c("Gained area" = "#9713AE")) +
+    coord_fixed(xlim = c(xmin, xmax), 
+                ylim = c(ymin, ymax), 
+                expand = F) +
+    scale_size_area() +
+    borders("state") +
+    borders("world", colour = "black", fill = NA) +
+    labs(x = "Longitude",
+         y = "Latitude",
+         fill = "") + 
+    theme(axis.title.x = element_text(margin = margin(t = 10)),
+          axis.title.y = element_text(margin = margin(r = 10)),
+          panel.background = element_rect(fill = "grey99"),
+          panel.grid.major = element_line(color = "grey92"),
+          panel.grid.minor = element_line(color = "grey92"),
+          legend.box.background = element_rect(color = NA),
+          plot.margin = margin(t = 10,  
+                               r = 20, 
+                               b = 10,  
+                               l = 20))
+  
+}
 
 

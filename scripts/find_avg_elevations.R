@@ -97,8 +97,8 @@ for (i in 1:4) {
   
   # iv) Calculate averages for this species and append to full data frame
   new_df <- data.frame(species = file_id,
-                       current = mean(elevocc1$elevation),
-                       future = mean(elevocc2$elevation))
+                       current.m = mean(elevocc1$elevation),
+                       future.m = mean(elevocc2$elevation))
   
   averages <- rbind(averages, new_df)
   

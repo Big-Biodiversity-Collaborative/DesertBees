@@ -1,683 +1,178 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 21 December 2023
-# Last modified: 14 May 2024
+# Last modified: 15 May 2024
 
 
 
 
 # ----- ABOUT -----
 
-# Generates maps from Maxent results
+# Finds area of current/future distributions
 
-# Find values only in current
-
-
-# Find values only in future
-
-
-# Find values in both current and future
+# Finds area that bee and plants overlap
+  # Plots overlapped area on map for visualization
 
 
 
 
 # ----- LOAD LIBRARIES -----
 
+# For finding areas
+library(terra)
+library(raster)
+
+# For mapping
 library(ggplot2)
 library(cowplot)
+
+# Custom function
+source("functions.R")
 
 # Collect data for map borderlines
 wrld <- ggplot2::map_data("world")
 
 
 
+
 # ----- LOAD DATA -----
 
-# Species occurence data
+# Species occurrence data
 data <- read.csv("data/GBIF/cleaned_species_with_elevation.csv")
 
 
 
 
-# ---------------------------------------------------------------------
-
-# A.1) CENTRIS PALLIDA (CURRENT) -----
-
-# Data for maps
-dist_df <- read.csv("output/Centris pallida/current_distribution.csv")
-range_df <- read.csv("output/Centris pallida/current_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-# Occurrence points
-occ_points <- data %>%
-  dplyr::filter(speciesKey == 1342915) %>%
-  dplyr::select(4, 5)
-
-# ENVIRONMENTAL SUITABILITY ---
-
-p1 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  geom_point(data = occ_points,
-             aes(x = longitude, y = latitude),
-             color = "cornflowerblue",
-             size = 1) +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-p1
-
-# Save
-ggsave(file = "output/Centris pallida/current_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Centris pallida/current_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# A.2) CENTRIS PALLIDA (FUTURE) -----
-
-# Data for maps
-dist_df <- read.csv("output/Centris pallida/future_distribution.csv")
-range_df <- read.csv("output/Centris pallida/future_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-p2 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-     x = "Longitude",
-     y = "Latitude",
-     fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-p2
-
-# Save
-ggsave(file = "output/Centris pallida/future_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Centris pallida/future_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# ---------------------------------------------------------------------
-
-# A.3) SIDE-BY-SIDE
-
-plot_grid(p1, p2, labels = c('A', 'B'), label_size = 20)
-
-# Save
-ggsave(file = "output/Centris pallida/both_climate_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# B.1) OLNEYA TESOTA (CURRENT) -----
-
-# Data for maps
-dist_df <- read.csv("output/Olneya tesota/current_distribution.csv")
-range_df <- read.csv("output/Olneya tesota/current_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-q1 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-q1
-
-# Save
-ggsave(file = "output/Olneya tesota/current_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Olneya tesota/current_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# B.2) OLNEYA TESOTA (FUTURE) -----
-
-# Data for maps
-dist_df <- read.csv("output/Olneya tesota/future_distribution.csv")
-range_df <- read.csv("output/Olneya tesota/future_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-q2 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-q2
-
-# Save
-ggsave(file = "output/Olneya tesota/future_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Olneya tesota/future_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# B.3) SIDE-BY-SIDE
-
-plot_grid(q1, q2, labels = c('A', 'B'), label_size = 20)
-
-# Save
-ggsave(file = "output/Olneya tesota/both_climate_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# C.1) PARKINSONIA FLORIDA (CURRENT) -----
-
-# Data for maps
-dist_df <- read.csv("output/Parkinsonia florida/current_distribution.csv")
-range_df <- read.csv("output/Parkinsonia florida/current_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-r1 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-r1
-
-# Save
-ggsave(file = "output/Parkinsonia florida/current_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Parkinsonia florida/current_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# C.2) PARKINSONIA FLORIDA (FUTURE) -----
-
-# Data for maps
-dist_df <- read.csv("output/Parkinsonia florida/future_distribution.csv")
-range_df <- read.csv("output/Parkinsonia florida/future_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-r2 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-r2
-
-# Save
-ggsave(file = "output/Parkinsonia florida/future_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Parkinsonia florida/future_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# C.3) SIDE-BY-SIDE
-
-plot_grid(r1, r2, labels = c('A', 'B'), label_size = 20)
-
-# Save
-ggsave(file = "output/Parkinsonia florida/both_climate_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# D.1) PARKINSONIA MICROPHYLLA (CURRENT) -----
-
-# Data for maps
-dist_df <- read.csv("output/Parkinsonia microphylla/current_distribution.csv")
-range_df <- read.csv("output/Parkinsonia microphylla/current_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-s1 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-s1
-
-# Save
-ggsave(file = "output/Parkinsonia microphylla/current_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("Current Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Parkinsonia microphylla/current_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# D.2) PARKINSONIA MICROPHYLLA (FUTURE) -----
-
-# Data for maps
-dist_df <- read.csv("output/Parkinsonia microphylla/future_distribution.csv")
-range_df <- read.csv("output/Parkinsonia microphylla/future_range.csv")
-
-# Set boundaries where map should be focused
-xmax <- max(dist_df$x) + 1
-xmin <- min(dist_df$x) - 1
-ymax <- max(dist_df$y) + 1
-ymin <- min(dist_df$y) - 1
-
-
-# ENVIRONMENTAL SUITABILITY ---
-
-s2 <- ggplot() +
-  geom_raster(data = dist_df, 
-              aes(x = x, y = y, fill = layer))  + 
-  scale_fill_gradientn(colours = viridis::plasma(99)) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Environmental \nSuitability") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.box.background = element_rect(color = NA),
-        legend.position = "bottom",
-        panel.background = element_rect(fill = "grey95"))
-
-s2
-
-# Save
-ggsave(file = "output/Parkinsonia florida/future_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-
-# RANGE ---
-
-range_df$layer <- as.factor(range_df$layer)
-
-ggplot() +
-  geom_raster(data = range_df, 
-              aes(x = x, y = y, fill = layer)) +
-  scale_fill_manual(values = c("orangered3", "mediumturquoise")) +
-  coord_fixed(xlim = c(xmin, xmax), 
-              ylim = c(ymin, ymax), 
-              expand = F) +
-  scale_size_area() +
-  borders("world") +
-  borders("state") +
-  labs(title = bquote(bold("CMIP6 Climate Predictions")),
-       x = "Longitude",
-       y = "Latitude") + 
-  theme(axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-        legend.position = "none")
-
-# Save
-ggsave(file = "output/Parkinsonia microphylla/future_range.png",
-       width = 25,
-       height = 15,
-       units = "cm")
-
-# ---------------------------------------------------------------------
-
-# D.3) SIDE-BY-SIDE
-
-plot_grid(s1, s2, labels = c('A', 'B'), label_size = 20)
-
-# Save
-ggsave(file = "output/Parkinsonia microphylla/both_climate_distribution.png",
-       width = 25,
-       height = 15,
-       units = "cm")
+# ----- CALCULATE AREAS COVERED BY CURRENT / FUTURE DISTRIBUTIONS -----
+
+# Species to loop through
+spp_list <- unique(data$species)
+
+# Empty table
+areas <- data.frame()
+
+# Loop for finding averages and adding them to a table
+for (i in 1:4) {
+  
+  # i) Access file names
+  file_id <- gsub(" ", "_", tolower(spp_list[i]))
+  
+  # ii) Current distribution
+  current <- rast(paste0("output/", file_id, "/worldclim_predicted_distribution_adjusted.tif"))
+  area1 <- expanse(current, unit = "km")
+  
+  # iii) Future distribution
+  future <- rast(paste0("output/", file_id, "/ssp245_2021_predicted_distribution_adjusted.tif"))
+  area2 <- expanse(future, unit = "km")
+  
+  # iv) Calculate averages for this species and append to full data frame
+  new_df <- data.frame(species = file_id,
+                       current.km = area1$area,
+                       future.km = area2$area,
+                       percent_change = round(((area2$area - area1$area) / area1$area) * 100, digits = 4))
+  
+  areas <- rbind(areas, new_df)
+  
+}
+
+# End of main loop
+
+# Save table
+write.csv(areas,
+          file = "output/predicted_areas.csv",
+          row.names = FALSE)
+
+
+
+
+# ----- FIND AREA OVERLAP BY BEE AND PLANTS -----
+
+# (A) Current --
+
+# Starting raster to find intersection with
+current_intersects <- raster("output/centris_pallida/worldclim_predicted_distribution_adjusted.tif")
+
+# Find intersection of all distributions
+for (i in 2:4) {
+  
+  # i) Access file names
+  file_id <- gsub(" ", "_", tolower(spp_list[i]))
+  
+  # ii) Access file y
+  area_y <- raster(paste0("output/", file_id, "/worldclim_predicted_distribution_adjusted.tif"))
+  
+  # See where the intersection between x and y is
+  current_intersects <- raster::intersect(current_intersects, area_y)
+  
+}
+
+# Convert to SpatRaster so we can find the area
+intersects_spat <- rast(current_intersects)
+
+current_intersect_area <- expanse(intersects_spat, unit = "km")
+
+# Convert to data frame so we can plot it
+current_intersect <- as(current_intersects, "SpatialPixelsDataFrame")
+
+current_intersect <- as.data.frame(current_intersect)
+
+colnames(current_intersect)[1] = "layer"
+
+# Bounding box
+xmax <- max(current_intersect$x) + 1
+xmin <- min(current_intersect$x) - 1
+ymax <- max(current_intersect$y) + 1
+ymin <- min(current_intersect$y) - 1
+
+# Plot
+current_area_plot <- custom_ggplot4(sdm_data = current_intersect, 
+                                    xmin = xmin, xmax = xmax, 
+                                    ymin = ymin, ymax = ymax)
+
+
+# (B) Future --
+
+# Starting raster to find intersection with
+future_intersects <- raster("output/centris_pallida/ssp245_2021_predicted_distribution_adjusted.tif")
+
+# Find intersection of all distributions
+for (i in 2:4) {
+  
+  # i) Access file names
+  file_id <- gsub(" ", "_", tolower(spp_list[i]))
+  
+  # ii) Access file y
+  area_y <- raster(paste0("output/", file_id, "/ssp245_2021_predicted_distribution_adjusted.tif"))
+  
+  # See where the intersection between x and y is
+  future_intersects <- raster::intersect(future_intersects, area_y)
+  
+}
+
+# Convert to SpatRaster so we can find the area
+intersects_spat <- rast(future_intersects)
+
+future_intersect_area <- expanse(intersects_spat, unit = "km")
+
+# Convert to data frame so we can plot it
+future_intersect <- as(future_intersects, "SpatialPixelsDataFrame")
+
+future_intersect <- as.data.frame(future_intersect)
+
+colnames(future_intersect)[1] = "layer"
+
+# Bounding box
+xmax <- max(current_intersect$x) + 1
+xmin <- min(current_intersect$x) - 1
+ymax <- max(current_intersect$y) + 1
+ymin <- min(current_intersect$y) - 1
+
+# Plot
+future_area_plot <- custom_ggplot5(sdm_data = future_intersect, 
+                                   xmin = xmin, xmax = xmax, 
+                                   ymin = ymin, ymax = ymax)
+
+
+
 
 
