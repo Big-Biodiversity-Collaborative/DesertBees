@@ -16,7 +16,7 @@
 
     -   Data retrieval and preparation follows code by Jeff Oliver here: [prep-forecast-data.R · Big-Biodiversity-Collaborative/SwallowtailClimateChange (github.com)](https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R).
 
-    -   Resolution: \~ 4 x 4 km
+    -   Resolution: \~ 21 x 21 km (2.5 minutes of a degree)
 
     -   Contains files for the 19 bioclimactic variables: bio1.tif - bio19.tif.
 
