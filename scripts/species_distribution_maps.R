@@ -40,14 +40,6 @@ source("functions.R")
 # Collect data for map borderlines
 wrld <- ggplot2::map_data("world")
 
-# Major cities
-city_coords <- data.frame(city = c("Phoenix", "Tucson", "Las Vegas", 
-                                   "Los Angeles", "San Diego", "Hermosillo"),
-                          latitude = c(33.6055497, 32.1560939, 36.1251645,
-                                       34.0206085, 32.8246976, 29.0834732),
-                          longitude = c(-112.4547019, -111.0486154, -115.3398097,
-                                        -118.7413831, -117.4386299, -111.0707154))
-
 
 
 

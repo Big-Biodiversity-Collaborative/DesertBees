@@ -69,7 +69,7 @@ sdm <- function(species_data) {
     # mapviewOptions(fgb = FALSE)
   
   # The "width = " is in meters, and we'll assume dispersal for any species
-  # at most is 1500 meters (bee foraging or tree seed).
+  # at most is 150000 meters (bee foraging or tree seed).
   # Also accounting for shifts in range.
   geo_extent <- buffer(x = hull, width = 150000)
   
@@ -279,7 +279,8 @@ sdm <- function(species_data) {
   
   # And save file
   write.csv(eval_table, 
-            paste0("output/", file_id, "/parameter_results.csv"))
+            paste0("output/", file_id, "/parameter_results.csv"),
+            row.names = FALSE)
   
   # Filter for optimal model
   optimal <- results@results %>%

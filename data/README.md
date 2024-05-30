@@ -12,13 +12,13 @@
 
     -   Acquired in scripts/prep_forecast_data.R.
 
-    -   An ensemble of the CMIP6 climate models under the SSP370 emissions scenario for the 20-year intervals 2021-2040, 2041-2060, 2061-2080, and 2081-2100.
+    -   An ensemble of the CMIP6 climate models under the SSP245 emissions scenario for the 20-year period of 2021-2040.
 
     -   Data retrieval and preparation follows code by Jeff Oliver here: [prep-forecast-data.R · Big-Biodiversity-Collaborative/SwallowtailClimateChange (github.com)](https://github.com/Big-Biodiversity-Collaborative/SwallowtailClimateChange/blob/main/src/data/prep-forecast-data.R).
 
     -   Resolution: \~ 4 x 4 km
 
-    -   Contains bio1.tif - bio19.tif files for each 20-year period.
+    -   Contains files for the 19 bioclimactic variables: bio1.tif - bio19.tif.
 
         ------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@
 
     -   Resolution: \~ 21 x 21 km (2.5 minutes of a degree)
 
-    -   bio1.tif - bio19.tif
+    -   Contains files for the 19 bioclimactic variables: bio1.tif - bio19.tif
 
         ------------------------------------------------------------------------
 
