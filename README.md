@@ -4,7 +4,7 @@
 
 ## 🐝 Summary
 
-This repository stores the data and code for generating figures of the predicted current (2000-2021) and forecasted (2021-2040) distributions of the desert pallid bee (*Centris pallida*) and some of its major nectar plants -- the desert ironwood (*Olneya tesota*), blue palo verde (*Parkinsonia florida*), and yellow palo verde (*Parkinsonia microphylla*).
+This repository stores materials for generating figures and running models for the predicted current (2000-2021) and forecasted (2021-2040) distributions of the desert pallid bee (*Centris pallida*) and some of its major nectar plants -- the desert ironwood (*Olneya tesota*), blue palo verde (*Parkinsonia florida*), and yellow palo verde (*Parkinsonia microphylla*).
 
 The distributions are modeled using the maximum entropy model (MaxEnt), and the most fitting model is determined through cross-validation with the `ENMeval` package. Predictions are made with `terra::predict()` over the time periods 2000-2021 and 2021-2040. Historical climate data is attained from WorldClim version 2.1, and forecasted climate data from AdaptWest.
 
@@ -12,15 +12,23 @@ These figures will help assess possible changes in distribution overlap as a war
 
 ## 📚 Libraries
 
-The following R packages are used (and each script will use all, or some, of these): [attach .csv of libraries used]
+The R packages used may be found in `packages.csv`. Each script may use some or all that are listed.
 
 ## 📂 Folder Contents
 
-***data:*** Contains the raw and cleaned data from the [Global Biodiversity Information Facility](https://www.gbif.org/) (GBIF). The climate data are from [WorldClim (version 2.1)](http://www.worldclim.com/version2), the [Coupled Model Intercomparison Project, Phase 6](https://wcrp-cmip.org/cmip-phase-6-cmip6/) (CMIP6), and [AdaptWest](https://adaptwest.databasin.org/). Other data used in the modeling may be stored here as well, such as the 2023 Digital elevation Model (DEM) from the [North American Atlas](http://www.cec.org/north-american-environmental-atlas/elevation-2023/). The data in this folder are used in the MaxEnt modeling and generation of the figures.
+1.  ***data:*** Contains data from the following sites --
 
-***scripts:*** Contains code for cleaning the data, running models, and generating figures.
+    -   [Global Biodiversity Information Facility](https://www.gbif.org/) (GBIF) (species occurrence data)
 
-***output:*** Contains figures, shapefiles, and model outputs.
+    -   [WorldClim (version 2.1)](http://www.worldclim.com/version2) (historical climate data)
+
+    -   [AdaptWest](https://adaptwest.databasin.org/) / [Coupled Model Intercomparison Project, Phase 6](https://wcrp-cmip.org/cmip-phase-6-cmip6/) (CMIP6) (forecasted climate data)
+
+    -   [North American Atlas](http://www.cec.org/north-american-environmental-atlas/elevation-2023/) (elevation data)
+
+2.  ***scripts:*** Contains code for cleaning the data, running models, and generating figures.
+
+3.  ***output:*** Contains figures, shapefiles, and model outputs.
 
 ## 📑 Order of Script Use
 
