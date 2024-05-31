@@ -2,7 +2,7 @@
 
 This folder contains the code used in data cleaning / analysis, and for figure generation.
 
--   **get_GBIF.R**
+-   **get_gbif.R**
 
     Retrieves data from the [Global Biodiversity Information Facility](https://www.gbif.org/) of four species:
 
@@ -16,13 +16,13 @@ This folder contains the code used in data cleaning / analysis, and for figure g
 
     The data is processed to remove those with no geographic coordinates (latitude and longitude), duplicates, and other characteristics that may contribute to the accuracy and analysis of the data. The cleaning includes consideration of the species' documented range, so a polygon is also drawn around the observations and the outliers are excluded from the analysis. This script creates the following files:
 
-    -   `data/GBIF/cleaned_species.csv`
+    -   `data/gbif/cleaned_species.csv`
 
     ------------------------------------------------------------------------
 
 -   **run_maxent.R**
 
-    Runs the Maxent model on each of the four species. The code is separated into current (using [WorldClim](http://www.worldclim.com/version2)) and future (using [CMIP6)](https://wcrp-cmip.org/cmip-phase-6-cmip6/) prediction loops, and the results are stored in the following folders under `output/`:
+    Runs the Maxent model on each of the four species. Results are stored in the following folders under `output/`:
 
     -   `centris_pallida`
 
