@@ -1,5 +1,7 @@
 # Investigating the Distributions of *Centris pallida* and Nectar Plants in Response to Climate Change
 
+![](images/github_banner.png)
+
 *\~ IN PROGRESS*
 
 ## 🐝 Summary
