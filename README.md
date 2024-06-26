@@ -2,7 +2,9 @@
 
 ![](images/github_banner.png)
 
-*\~ IN PROGRESS*
+**Manuscript:**
+
+**Github archive:** [![DOI](https://zenodo.org/badge/624708055.svg)](https://zenodo.org/doi/10.5281/zenodo.12539191)
 
 ## 🐝 Summary
 
@@ -55,4 +57,4 @@ The R packages used may be found in `packages.csv`. Each script may use some or 
     -   ***find_avg_elevations.R***
         -   Finds the average elevation across the predicted distribution area (current and forecasted) for each species.
 
-*Last updated: May 31, 2024*
+*Last updated: June 25, 2024*
