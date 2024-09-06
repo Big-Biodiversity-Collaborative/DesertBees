@@ -318,7 +318,14 @@ sdm <- function(species_data) {
   
   # List of climate scenarios to make predictions for (folder path after data/)
   clim_ids <- c("worldclim",
-                "ensemble/ssp245/2021")
+                "ensemble/ssp245/2021",
+                "ensemble/ssp245/2041",
+                "ensemble/ssp245/2061",
+                "ensemble/ssp245/2081",
+                "ensemble/ssp370/2021",
+                "ensemble/ssp370/2041",
+                "ensemble/ssp370/2061",
+                "ensemble/ssp370/2081")
   
   # Loop through each climate period and generate predictions for each
   for (clim_id in clim_ids) {
