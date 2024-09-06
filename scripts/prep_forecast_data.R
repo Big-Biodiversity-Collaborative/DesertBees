@@ -53,7 +53,7 @@ monthly_vars <- c("tmin" = "Tmin",
                   "prec" = "PPT")
 
 # Used for file downloads, based on URL names at AWS
-per_starts <- c("2021", "2041")
+per_starts <- c("2021", "2041", "2061", "2081")
 
 # SSP of interest (2 = 4.5, 3 = 7.0, 5 = 8.5)
 ssps <- c("ssp245", "ssp370")
