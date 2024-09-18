@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 10 April 2024
-# Last modified: 19 May 2024
+# Last modified: 6 September 2024
 
 
 
@@ -11,6 +11,8 @@
 # Function for running Maxent and generating suitability predictions
   # SDM - loop for each species
   # Predictions - loop for each time frame
+
+# Functions for custom ggplots
 
 
 
@@ -78,7 +80,14 @@ sdm <- function(species_data) {
   
   # For the next step: If new shapefiles that would differ from the original are
     # created, you need to delete the former files manually (the main folder for
-    # each species' shapefiles, e.g. output/shapefiles/centris_pallida)
+    # each species' shapefiles). In short, delete the output/shapefiles folder.
+  
+  # Create a shapefiles folder in the first place (if it does not exist)
+  if (!dir.exists("output/shapefiles")) {
+    
+    dir.create("output/shapefiles")
+    
+  }
   
   # Create directory in output for that species if it does not exist
   species_folder <- paste0("output/shapefiles/", file_id)
@@ -100,20 +109,10 @@ sdm <- function(species_data) {
   
   # --- CROP ELEVATION DATA ---
   
-  # We are starting with elevation because we are turning extreme elevations to
-  # NA values. This will create some "holes" which will need to be applied
-  # to the climate data as well.
-  
   # Crop and mask elevation to the buffer boundaries
   dem_mod <- dem %>%
     terra::crop(geo_extent, snap = "out") %>%
     terra::mask(geo_extent)
-  
-  # Check: plot(dem_mod)
-  
-  # Remove extreme elevation values
-  # (Accounts for both bee and plant ranges)
-  dem_mod[dem_mod < 0] <- NA
   
   # Check: plot(dem_mod)
   
@@ -151,6 +150,9 @@ sdm <- function(species_data) {
   
   # Thin occurrence records so there's only one per raster cell
   occurrences <- dismo::gridSample(spp, clim_mod[[1]], n = 1)
+  
+  # Check number of occurrences
+  message("Number of occurrences (thinned):")
   
   # Note that process is done
   message(paste0(Sys.time(), " | Occurrence points have been thinned."))
@@ -208,7 +210,7 @@ sdm <- function(species_data) {
                    bg.grp = block$bg.grp)
   
   # We try modeling with fc = L, LQ, LQH, and H, and rm = 1, 2, and 3
-  tune.args <- list(fc = c("L", "LQ", "LQH", "H"), rm = 1:3)
+  tune.args <- list(fc = c("L", "LQ", "LQH"), rm = 1:3)
   
   # Feature and regularization explanations: 
     # https://nsojournals.onlinelibrary.wiley.com/doi/epdf/10.1111/j.1600-0587.2013.07872.x
@@ -246,7 +248,7 @@ sdm <- function(species_data) {
   # For parallel processing, use 2 fewer cores than are available
   # (Creates less load on the CPU?)
   # Note to self: There are 20 total according to the ENMevaluate messages
-  num_cores <- parallel::detectCores() - 2
+  #num_cores <- parallel::detectCores() - 2
   
   # Note that process is done
   message(paste0(Sys.time(), " | Parameters have been set."))
@@ -265,7 +267,7 @@ sdm <- function(species_data) {
                          user.grp = user.grp,
                          other.settings = other.settings,
                          parallel = TRUE, # Allow parallel processing
-                         numCores = num_cores)
+                         numCores = NULL)
   
   # Note that process is done
   message(paste0(Sys.time(), " | MaxEnt has been completed."))
@@ -318,18 +320,20 @@ sdm <- function(species_data) {
   
   # List of climate scenarios to make predictions for (folder path after data/)
   clim_ids <- c("worldclim",
-                "ensemble/ssp245/2021",
-                "ensemble/ssp245/2041",
-                "ensemble/ssp245/2061",
-                "ensemble/ssp245/2081",
-                "ensemble/ssp370/2021",
-                "ensemble/ssp370/2041",
-                "ensemble/ssp370/2061",
-                "ensemble/ssp370/2081")
+                "ensemble/ssp245/2021")
   
   # Loop through each climate period and generate predictions for each
   for (clim_id in clim_ids) {
     
+    
+    # --- MAKE FOLDER FOR CLIMATE SCENARIO RESULTS ---
+    
+    # Create folder within species folder if it does not exist yet
+    if (!dir.exists(paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id))))) {
+      
+      dir.create(paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id))))
+      
+    }
     
     
     # --- GET CLIMATE SCENARIO TO MAKE PREDICTIONS FOR ---
@@ -368,12 +372,6 @@ sdm <- function(species_data) {
     dem_mod <- dem %>%
       terra::crop(geo_extent, snap = "out") %>%
       terra::mask(geo_extent)
-    
-    # Check: plot(dem_mod)
-    
-    # Remove extreme elevation values
-    # (Accounts for both bee and plant ranges)
-    dem_mod[dem_mod < 0] <- NA
     
     # Check: plot(dem_mod)
     
@@ -441,22 +439,22 @@ sdm <- function(species_data) {
     # (B) PREDICTED RANGE ---
     
     # Extract predicted suitability values for occurrence locations
-    pred_occ <- raster::extract(pred_vals, occurrences)
+    #pred_occ <- raster::extract(pred_vals, occurrences)
     
     # Extract predicted suitability values for background locations
-    pred_bg <- raster::extract(pred_vals, background)
+    #pred_bg <- raster::extract(pred_vals, background)
     
     # Evaluate models - gives ModelEvaluation object
-    eval <- dismo::evaluate(pred_occ, pred_bg)
+    #eval <- dismo::evaluate(pred_occ, pred_bg)
     
     # Use a max(spec + sens) threshold to convert probabilities into binary values 
     # (1 = part of species' predicted range; 0 = outside of range) - gives a Value
-    threshold <- dismo::threshold(eval, stat = "spec_sens")
+    #threshold <- dismo::threshold(eval, stat = "spec_sens")
     
     # For predicting range, find predicted values greater than the threshold
-    pred_range <- pred_vals > threshold
+    #pred_range <- pred_vals > threshold
     
-    message(paste0(Sys.time(), " | Predicted range for ", clim_id, " is done."))
+    #message(paste0(Sys.time(), " | Predicted range for ", clim_id, " is done."))
     
     
     # --- SAVE PREDICTIONS TO OUTPUT FOLDER ---
@@ -465,9 +463,19 @@ sdm <- function(species_data) {
     
     # (A.1) ORIGINAL VALUES ---
     
-    # As raster
+    # Remove file if it exists before writing a new one
+    if (file.exists(paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/", 
+                           gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.tif"))) {
+      
+      file.remove(paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/", 
+                         gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.tif"))
+      
+    }
+    
+    # Write raster
     writeRaster(pred_vals,
-                paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.tif"))
+                paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/", 
+                       gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.tif"))
     
     # Convert to SpatialPixelsDataFrame
     pred_spdf <- as(pred_vals, "SpatialPixelsDataFrame")
@@ -477,14 +485,25 @@ sdm <- function(species_data) {
     
     # Save file
     write.csv(pred_df, 
-              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.csv"),
+              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/",
+                     gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution.csv"),
               row.names = FALSE)
     
     # (A.2) ONLY >50% CHANCE SUITABLE VALUES ---
     
-    # As raster
+    # Remove file if it exists before writing a new one
+    if (file.exists(paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/", 
+                           gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.tif"))) {
+      
+      file.remove(paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/", 
+                         gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.tif"))
+      
+    }
+    
+    # Write raster
     writeRaster(pred_vals_plotting,
-                paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.tif"))
+                paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/",
+                       gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.tif"))
     
     # Convert to SpatialPixelsDataFrame
     pred_spdf <- as(pred_vals_plotting, "SpatialPixelsDataFrame")
@@ -494,7 +513,8 @@ sdm <- function(species_data) {
     
     # Save file
     write.csv(pred_df, 
-              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.csv"),
+              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "/",
+                     gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_distribution_adjusted.csv"),
               row.names = FALSE)
     
     # Note that process is done
@@ -503,21 +523,21 @@ sdm <- function(species_data) {
     # (B) PREDICTED RANGE ---
     
     # Convert to SpatialPixelsDataFrame
-    range_spdf <- as(pred_range, "SpatialPixelsDataFrame")
+    #range_spdf <- as(pred_range, "SpatialPixelsDataFrame")
     
     # Convert to data frame
-    range_df <- as.data.frame(range_spdf)
+    #range_df <- as.data.frame(range_spdf)
     
     # Factor layers
-    range_df$layer <- as.factor(range_df$layer)
+    #range_df$layer <- as.factor(range_df$layer)
     
     # Save file
-    write.csv(range_df, 
-              paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_range.csv"),
-              row.names = FALSE)
+    #write.csv(range_df, 
+    #          paste0("output/", file_id, "/", gsub("/", "_", gsub("ensemble/", "", clim_id)), "_predicted_range.csv"),
+    #          row.names = FALSE)
     
     # Note that process is done
-    message(paste0(Sys.time(), " | Predicted range saved for ", clim_id, "."))
+    #message(paste0(Sys.time(), " | Predicted range saved for ", clim_id, "."))
     
   } 
   
@@ -629,9 +649,7 @@ custom_ggplot3 <- function(sdm_data, sdm_type) {
   
 }
 
-# For area intersect panels 
-
-# Current intersect
+# Current intersect map
 custom_ggplot4 <- function(sdm_data, xmin, xmax, ymin, ymax) {
   
   # Plot map
@@ -663,7 +681,7 @@ custom_ggplot4 <- function(sdm_data, xmin, xmax, ymin, ymax) {
   
 }
 
-# Future intersect
+# Future intersect map
 custom_ggplot5 <- function(sdm_data, xmin, xmax, ymin, ymax) {
   
   # Plot map
@@ -694,37 +712,3 @@ custom_ggplot5 <- function(sdm_data, xmin, xmax, ymin, ymax) {
                                l = 20))
   
 }
-
-# Gained area
-custom_ggplot6 <- function(sdm_data, xmin, xmax, ymin, ymax) {
-  
-  # Plot map
-  ggplot() +
-    geom_raster(data = sdm_data, 
-                aes(x = x, y = y, fill = "Gained area"))  + 
-    scale_fill_manual(name = "",
-                      breaks = c("Gained area"),
-                      values = c("Gained area" = "#9713AE")) +
-    coord_fixed(xlim = c(xmin, xmax), 
-                ylim = c(ymin, ymax), 
-                expand = F) +
-    scale_size_area() +
-    borders("state") +
-    borders("world", colour = "black", fill = NA) +
-    labs(x = "Longitude",
-         y = "Latitude",
-         fill = "") + 
-    theme(axis.title.x = element_text(margin = margin(t = 10)),
-          axis.title.y = element_text(margin = margin(r = 10)),
-          panel.background = element_rect(fill = "grey99"),
-          panel.grid.major = element_line(color = "grey92"),
-          panel.grid.minor = element_line(color = "grey92"),
-          legend.box.background = element_rect(color = NA),
-          plot.margin = margin(t = 10,  
-                               r = 20, 
-                               b = 10,  
-                               l = 20))
-  
-}
-
-
