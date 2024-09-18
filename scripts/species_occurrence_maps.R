@@ -46,45 +46,45 @@ data <- read.csv("data/gbif/cleaned_species_with_elevation.csv")
   # Also separate by used observations and omitted from model
 
 cp <- data %>%
-  filter(speciesKey == 1342915) %>%
-  filter(elevation > 0 | is.na(elevation))
+  filter(speciesKey == 1342915) #%>%
+  #filter(elevation > 0 | is.na(elevation))
 
-cp_omitted <- data %>%
-  filter(speciesKey == 1342915) %>%
-  filter(elevation <= 0)
+#cp_omitted <- data %>%
+#  filter(speciesKey == 1342915) %>%
+#  filter(elevation <= 0)
 
 # Check:
   # cp_all <- data %>% filter(speciesKey == 1342915)
 
 ot <- data %>%
-  filter(speciesKey == 2974564) %>%
-  filter(elevation > 0 | is.na(elevation))
+  filter(speciesKey == 2974564) #%>%
+  #filter(elevation > 0 | is.na(elevation))
 
-ot_omitted <- data %>%
-  filter(speciesKey == 2974564) %>%
-  filter(elevation <= 0)
+#ot_omitted <- data %>%
+#  filter(speciesKey == 2974564) %>%
+#  filter(elevation <= 0)
 
 # Check:
   # ot_all <- data %>% filter(speciesKey == 2974564)
 
 pf <- data %>%
-  filter(speciesKey == 5359949) %>%
-  filter(elevation > 0 | is.na(elevation))
+  filter(speciesKey == 5359949) #%>%
+  #filter(elevation > 0 | is.na(elevation))
 
-pf_omitted <- data %>%
-  filter(speciesKey == 5359949) %>%
-  filter(elevation <= 0)
+#pf_omitted <- data %>%
+#  filter(speciesKey == 5359949) %>%
+#  filter(elevation <= 0)
 
 # Check:
   # pf_all <- data %>% filter(speciesKey == 5359949)
 
 pm <- data %>%
-  filter(speciesKey == 5359945) %>%
-  filter(elevation > 0 | is.na(elevation))
+  filter(speciesKey == 5359945) #%>%
+  #filter(elevation > 0 | is.na(elevation))
 
-pm_omitted <- data %>%
-  filter(speciesKey == 5359945) %>%
-  filter(elevation <= 0)
+#pm_omitted <- data %>%
+#  filter(speciesKey == 5359945) %>%
+#  filter(elevation <= 0)
 
 # Check:
   # pm_all <- data %>% filter(speciesKey == 5359945)
@@ -95,13 +95,14 @@ pm_omitted <- data %>%
 # ----- GENERATE MAPS -----
 
 # C. PALLIDA ---
-cp_plot <- leaflet() %>%
+cp_plot <- leaflet(options = leafletOptions(zoomControl = FALSE,
+                                            attributionControl = FALSE)) %>%
   addProviderTiles("OpenStreetMap.Mapnik") %>%
   addCircleMarkers(data = cp,
                    color = "#CD1076",
                    radius = 5,
                    fillOpacity = 0.8,
-                   stroke = FALSE) %>%
+                   stroke = FALSE) #%>%
   addCircleMarkers(data = cp_omitted,
                    color = "black",
                    radius = 5,
@@ -124,7 +125,7 @@ ot_plot <- leaflet(options = leafletOptions(zoomControl = FALSE,
                    color = "#EE7600",
                    radius = 5,
                    fillOpacity = 0.8,
-                   stroke = FALSE) %>%
+                   stroke = FALSE) #%>%
   addCircleMarkers(data = ot_omitted,
                    color = "black",
                    radius = 5,
@@ -147,7 +148,7 @@ pf_plot <- leaflet(options = leafletOptions(zoomControl = FALSE,
                    color = "#4F77DC",
                    radius = 5,
                    fillOpacity = 0.8,
-                   stroke = FALSE) %>%
+                   stroke = FALSE) #%>%
   addCircleMarkers(data = pf_omitted,
                    color = "black",
                    radius = 5,
@@ -170,7 +171,7 @@ pm_plot <- leaflet(options = leafletOptions(zoomControl = FALSE,
                    color = "#B452CD",
                    radius = 5,
                    fillOpacity = 0.8,
-                   stroke = FALSE) %>%
+                   stroke = FALSE) #%>%
   addCircleMarkers(data = pm_omitted,
                    color = "black",
                    radius = 5,
