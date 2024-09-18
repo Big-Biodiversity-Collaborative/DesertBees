@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 14 May 2024
-# Last modified: 14 May 2024
+# Last modified: 8 September 2024
 
 
 
@@ -56,7 +56,7 @@ for (i in 1:4) {
   file_id <- gsub(" ", "_", tolower(spp_list[i]))
   
   # ii) Current distribution
-  current <- read.csv(paste0("output/", file_id, "/worldclim_predicted_distribution_adjusted.csv"))
+  current <- read.csv(paste0("output/", file_id, "/worldclim/worldclim_predicted_distribution_adjusted.csv"))
   
   coords <- current %>%
     select(x, y)
@@ -76,7 +76,7 @@ for (i in 1:4) {
            elevation = northamerica_elevation_cec_2023)
   
   # iii) Future distribution
-  future <- read.csv(paste0("output/", file_id, "/ssp245_2021_predicted_distribution_adjusted.csv"))
+  future <- read.csv(paste0("output/", file_id, "/ssp245_2021/ssp245_2021_predicted_distribution_adjusted.csv"))
   
   coords <- future %>%
     select(x, y)
@@ -114,12 +114,12 @@ write.csv(averages,
 
 
 
-# ----- TESTING / TEMPLATE -----
+# ----- TESTING / TEMPLATE FOR ABOVE CODE -----
 
 # a) C. pallida ---
 
 # i) Current distribution
-current <- read.csv("output/centris_pallida/worldclim_predicted_distribution_adjusted.csv")
+current <- read.csv("output/centris_pallida/worldclim/worldclim_predicted_distribution_adjusted.csv")
 
 # Isolate lat/long
 coords <- current %>%
@@ -148,7 +148,7 @@ message(paste0("Average elevation for current distribution of C. pallida: "),
         mean(elevocc$elevation))
 
 # ii) Future distribution
-future <- read.csv("output/centris_pallida/ssp245_2021_predicted_distribution_adjusted.csv")
+future <- read.csv("output/centris_pallida/ssp245_2021/ssp245_2021_predicted_distribution_adjusted.csv")
 
 # Isolate lat/long
 coords <- future %>%

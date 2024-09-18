@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 18 December 2023
-# Last modified: 16 April 2024
+# Last modified: 6 September 2024
 
 
 
@@ -72,18 +72,12 @@ dem <- terra::project(dem_initial, crs(clim))
 # Species to loop through
 spp_list <- unique(data$species)
 
-# Before running and using sdm():
-  # If new shapefiles are needed, 
-  # First delete shapefiles in output/shapefiles/ 
-  # Then the folllowing loop can be run.
-
 # Function
 for (i in 1:4) {
   
   # Get species to work with
   species_data <- data %>%
     filter(species == spp_list[i]) %>%
-    filter(elevation > 0 | is.na(elevation)) %>%
     select(longitude, latitude)
   
   # Which species are we on
@@ -98,5 +92,18 @@ for (i in 1:4) {
   
 }
 
+# Get species to work with
+species_data <- data %>%
+  filter(species == spp_list[3]) %>%
+  select(longitude, latitude)
 
+# Which species are we on
+message(paste0("Currently analyzing: ", spp_list[3]))
+
+# Run through Maxent
+sdm(species_data = species_data)
+
+# Which species did we finish
+message(paste0("Finished analysis for: ", spp_list[3]))
+message("--------------------------------------------")
 

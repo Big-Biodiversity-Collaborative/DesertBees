@@ -42,7 +42,7 @@ optimal_cp <- cp %>%
   filter(auc.val.avg == max(auc.val.avg))
 
 optimal_cp <- cbind(optimal_cp, data.frame(species = "Centris pallida")) %>%
-  select(21, 2:20)
+  select(20, 1:19)
 
 optimal_ot <- ot %>%
   filter(cbi.val.avg > 0) %>%
@@ -50,7 +50,7 @@ optimal_ot <- ot %>%
   filter(auc.val.avg == max(auc.val.avg))
 
 optimal_ot <- cbind(optimal_ot, data.frame(species = "Olneya tesota")) %>%
-  select(21, 2:20)
+  select(20, 1:19)
 
 optimal_pf <- pf %>%
   filter(cbi.val.avg > 0) %>%
@@ -58,7 +58,7 @@ optimal_pf <- pf %>%
   filter(auc.val.avg == max(auc.val.avg))
 
 optimal_pf <- cbind(optimal_pf, data.frame(species = "Parkinsonia florida")) %>%
-  select(21, 2:20)
+  select(20, 1:19)
 
 optimal_pm <- pm %>%
   filter(cbi.val.avg > 0) %>%
@@ -66,7 +66,7 @@ optimal_pm <- pm %>%
   filter(auc.val.avg == max(auc.val.avg))
 
 optimal_pm <- cbind(optimal_pm, data.frame(species = "Parkinsonia microphylla")) %>%
-  select(21, 2:20)
+  select(20, 1:19)
 
 df <- optimal_cp %>%
   rbind(optimal_ot) %>%

@@ -7,3 +7,6 @@
 # Files that are too big
 data/DEM
 data/ensemble/monthly
+
+# GIMP files
+.xcf

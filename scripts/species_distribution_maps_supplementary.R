@@ -44,7 +44,7 @@ wrld <- ggplot2::map_data("world")
 # ----- C. PALLIDA 2041-2100 -----
 
 # C. pallida zoom box
-zoom_data <- read.csv("output/centris_pallida/ssp245_2041_predicted_distribution_adjusted.csv")
+zoom_data <- read.csv("output/centris_pallida/ssp245_2041/ssp245_2041_predicted_distribution_adjusted.csv")
 
 xmax <- max(zoom_data$x) + 1
 xmin <- min(zoom_data$x) - 1
@@ -54,37 +54,37 @@ ymin <- min(zoom_data$y) - 1
 # Now all maps should have the same axes
 
 # 245 - 2041
-data <- read.csv("output/centris_pallida/ssp245_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/centris_pallida/ssp245_2041/ssp245_2041_predicted_distribution_adjusted.csv")
 plot_a <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2061
-data <- read.csv("output/centris_pallida/ssp245_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/centris_pallida/ssp245_2061/ssp245_2061_predicted_distribution_adjusted.csv")
 plot_b <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2081
-data <- read.csv("output/centris_pallida/ssp245_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/centris_pallida/ssp245_2081/ssp245_2081_predicted_distribution_adjusted.csv")
 plot_c <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2041
-data <- read.csv("output/centris_pallida/ssp370_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/centris_pallida/ssp370_2041/ssp370_2041_predicted_distribution_adjusted.csv")
 plot_d <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2061
-data <- read.csv("output/centris_pallida/ssp370_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/centris_pallida/ssp370_2061/ssp370_2061_predicted_distribution_adjusted.csv")
 plot_e <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2081
-data <- read.csv("output/centris_pallida/ssp370_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/centris_pallida/ssp370_2081/ssp370_2081_predicted_distribution_adjusted.csv")
 plot_f <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
@@ -113,7 +113,7 @@ ggsave("output/distribution_maps/species_distribution_maps_supplementary.png",
 # ----- HOSTPLANTS 2061-2100 -----
 
 # C. pallida zoom box
-zoom_data <- read.csv("output/centris_pallida/ssp245_2041_predicted_distribution_adjusted.csv")
+zoom_data <- read.csv("output/centris_pallida/ssp245_2041/ssp245_2041_predicted_distribution_adjusted.csv")
 
 xmax <- max(zoom_data$x) + 1
 xmin <- min(zoom_data$x) - 1
@@ -125,37 +125,37 @@ ymin <- min(zoom_data$y) - 1
 # -- O. tesota --
 
 # 245 - 2041
-data <- read.csv("output/olneya_tesota/ssp245_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/olneya_tesota/ssp245_2041/ssp245_2041_predicted_distribution_adjusted.csv")
 plot_a <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2061
-data <- read.csv("output/olneya_tesota/ssp245_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/olneya_tesota/ssp245_2061/ssp245_2061_predicted_distribution_adjusted.csv")
 plot_b <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2081
-data <- read.csv("output/olneya_tesota/ssp245_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/olneya_tesota/ssp245_2081/ssp245_2081_predicted_distribution_adjusted.csv")
 plot_c <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2041
-data <- read.csv("output/olneya_tesota/ssp370_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/olneya_tesota/ssp370_2041/ssp370_2041_predicted_distribution_adjusted.csv")
 plot_d <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2061
-data <- read.csv("output/olneya_tesota/ssp370_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/olneya_tesota/ssp370_2061/ssp370_2061_predicted_distribution_adjusted.csv")
 plot_e <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2081
-data <- read.csv("output/olneya_tesota/ssp370_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/olneya_tesota/ssp370_2081/ssp370_2081_predicted_distribution_adjusted.csv")
 plot_f <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
@@ -163,37 +163,37 @@ plot_f <- custom_ggplot2(sdm_data = data,
 # -- P. florida --
 
 # 245 - 2041
-data <- read.csv("output/parkinsonia_florida/ssp245_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_florida/ssp245_2041/ssp245_2041_predicted_distribution_adjusted.csv")
 plot_a1 <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2061
-data <- read.csv("output/parkinsonia_florida/ssp245_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_florida/ssp245_2061/ssp245_2061_predicted_distribution_adjusted.csv")
 plot_b1 <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2081
-data <- read.csv("output/parkinsonia_florida/ssp245_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_florida/ssp245_2081/ssp245_2081_predicted_distribution_adjusted.csv")
 plot_c1 <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2041
-data <- read.csv("output/parkinsonia_florida/ssp370_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_florida/ssp370_2041/ssp370_2041_predicted_distribution_adjusted.csv")
 plot_d1 <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2061
-data <- read.csv("output/parkinsonia_florida/ssp370_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_florida/ssp370_2061/ssp370_2061_predicted_distribution_adjusted.csv")
 plot_e1 <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2081
-data <- read.csv("output/parkinsonia_florida/ssp370_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_florida/ssp370_2081/ssp370_2081_predicted_distribution_adjusted.csv")
 plot_f1 <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
@@ -201,37 +201,37 @@ plot_f1 <- custom_ggplot2(sdm_data = data,
 # -- P. microphylla --
 
 # 245 - 2041
-data <- read.csv("output/parkinsonia_microphylla/ssp245_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_microphylla/ssp245_2041/ssp245_2041_predicted_distribution_adjusted.csv")
 plot_a2 <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2061
-data <- read.csv("output/parkinsonia_microphylla/ssp245_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_microphylla/ssp245_2061/ssp245_2061_predicted_distribution_adjusted.csv")
 plot_b2 <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 245 - 2081
-data <- read.csv("output/parkinsonia_microphylla/ssp245_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_microphylla/ssp245_2081/ssp245_2081_predicted_distribution_adjusted.csv")
 plot_c2 <- custom_ggplot1(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2041
-data <- read.csv("output/parkinsonia_microphylla/ssp370_2041_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_microphylla/ssp370_2041/ssp370_2041_predicted_distribution_adjusted.csv")
 plot_d2 <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2061
-data <- read.csv("output/parkinsonia_microphylla/ssp370_2061_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_microphylla/ssp370_2061/ssp370_2061_predicted_distribution_adjusted.csv")
 plot_e2 <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)
 
 # 370 - 2081
-data <- read.csv("output/parkinsonia_microphylla/ssp370_2081_predicted_distribution_adjusted.csv")
+data <- read.csv("output/parkinsonia_microphylla/ssp370_2081/ssp370_2081_predicted_distribution_adjusted.csv")
 plot_f2 <- custom_ggplot2(sdm_data = data, 
                          xmin = xmin, xmax = xmax, 
                          ymin = ymin, ymax = ymax)

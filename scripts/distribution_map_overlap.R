@@ -1,7 +1,7 @@
 # Maxine Cruz
 # tmcruz@arizona.edu
 # Created: 21 December 2023
-# Last modified: 15 May 2024
+# Last modified: 8 September 2024
 
 
 
@@ -38,7 +38,7 @@ wrld <- ggplot2::map_data("world")
 # ----- LOAD DATA -----
 
 # Species occurrence data
-data <- read.csv("data/GBIF/cleaned_species_with_elevation.csv")
+data <- read.csv("data/gbif/cleaned_species_with_elevation.csv")
 
 
 
@@ -58,11 +58,11 @@ for (i in 1:4) {
   file_id <- gsub(" ", "_", tolower(spp_list[i]))
   
   # ii) Current distribution
-  current <- rast(paste0("output/", file_id, "/worldclim_predicted_distribution_adjusted.tif"))
+  current <- rast(paste0("output/", file_id, "/worldclim/worldclim_predicted_distribution_adjusted.tif"))
   area1 <- expanse(current, unit = "km")
   
   # iii) Future distribution
-  future <- rast(paste0("output/", file_id, "/ssp245_2021_predicted_distribution_adjusted.tif"))
+  future <- rast(paste0("output/", file_id, "/ssp245_2021/ssp245_2021_predicted_distribution_adjusted.tif"))
   area2 <- expanse(future, unit = "km")
   
   # iv) Calculate averages for this species and append to full data frame
@@ -90,7 +90,7 @@ write.csv(areas,
 # (A) Current --
 
 # Starting raster to find intersection with
-current_intersects <- raster("output/centris_pallida/worldclim_predicted_distribution_adjusted.tif")
+current_intersects <- raster("output/centris_pallida/worldclim/worldclim_predicted_distribution_adjusted.tif")
 
 # Find intersection of all distributions
 for (i in 2:4) {
@@ -99,7 +99,7 @@ for (i in 2:4) {
   file_id <- gsub(" ", "_", tolower(spp_list[i]))
   
   # ii) Access file y
-  area_y <- raster(paste0("output/", file_id, "/worldclim_predicted_distribution_adjusted.tif"))
+  area_y <- raster(paste0("output/", file_id, "/worldclim/worldclim_predicted_distribution_adjusted.tif"))
   
   # See where the intersection between x and y is
   current_intersects <- raster::intersect(current_intersects, area_y)
@@ -133,7 +133,7 @@ current_area_plot <- custom_ggplot4(sdm_data = current_intersect,
 # (B) Future --
 
 # Starting raster to find intersection with
-future_intersects <- raster("output/centris_pallida/ssp245_2021_predicted_distribution_adjusted.tif")
+future_intersects <- raster("output/centris_pallida/ssp245_2021/ssp245_2021_predicted_distribution_adjusted.tif")
 
 # Find intersection of all distributions
 for (i in 2:4) {
@@ -142,7 +142,7 @@ for (i in 2:4) {
   file_id <- gsub(" ", "_", tolower(spp_list[i]))
   
   # ii) Access file y
-  area_y <- raster(paste0("output/", file_id, "/ssp245_2021_predicted_distribution_adjusted.tif"))
+  area_y <- raster(paste0("output/", file_id, "/ssp245_2021/ssp245_2021_predicted_distribution_adjusted.tif"))
   
   # See where the intersection between x and y is
   future_intersects <- raster::intersect(future_intersects, area_y)
@@ -175,4 +175,21 @@ future_area_plot <- custom_ggplot5(sdm_data = future_intersect,
 
 
 
+# (C) Plot together --
+
+both_plots <- plot_grid(current_area_plot + theme(legend.position = "bottom"), 
+                        future_area_plot + theme(legend.position = "bottom"),
+                        labels = "auto",
+                        label_size = 20,
+                        ncol = 2)
+
+# Check
+both_plots
+
+# Save plot
+ggsave("output/distribution_maps/species_distribution_overlap.png", 
+       both_plots,
+       width = 22,
+       height = 15,
+       units = "cm")
 
