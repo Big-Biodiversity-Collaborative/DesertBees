@@ -4,7 +4,8 @@
 
 **Manuscript:**
 
-**Github archive:** [![DOI](https://zenodo.org/badge/624708055.svg)](https://zenodo.org/doi/10.5281/zenodo.12539191)
+**Github archive:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13777361.svg)](https://doi.org/10.5281/zenodo.13777361)
+
 
 ## 🐝 Summary
 
