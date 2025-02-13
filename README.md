@@ -2,7 +2,7 @@
 
 ![](images/github_banner.png)
 
-**Manuscript:**
+**Manuscript:** https://www.mdpi.com/2075-4450/15/10/793
 
 **Github archive:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13777361.svg)](https://doi.org/10.5281/zenodo.13777361)
 
